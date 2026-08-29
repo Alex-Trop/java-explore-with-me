@@ -23,7 +23,7 @@ public class ViewStatsController {
     @GetMapping
     public ResponseEntity<Object> getStats(@RequestParam(name = "start") @DateTimeFormat String start,
                                            @RequestParam(name = "end") @DateTimeFormat String end,
-                                           @RequestParam(name = "uris") String[] uris,
+                                           @RequestParam(name = "uris", required = false) String[] uris,
                                            @RequestParam(name = "unique", defaultValue = "false") boolean unique) {
         String decodedStart = URLDecoder.decode(start, StandardCharsets.UTF_8);
         String decodedEnd = URLDecoder.decode(end, StandardCharsets.UTF_8);

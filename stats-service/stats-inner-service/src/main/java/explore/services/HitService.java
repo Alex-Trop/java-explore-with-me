@@ -52,17 +52,26 @@ public class HitService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN);
         LocalDateTime startTime = LocalDateTime.parse(start, formatter);
         LocalDateTime endTime = LocalDateTime.parse(end, formatter);
-        List<String> uriList = List.of(uris);
         List<ViewStatsProjection> projections;
 
-        if (unique) {
-            log.info("Получение уникальных запросов");
+        if (unique && uris != null) {
+            log.info("Получение уникальных запросов по uri");
 
+            List<String> uriList = List.of(uris);
             projections = repository.findUniqueHitsByDateAndUri(startTime, endTime, uriList);
-        } else {
-            log.info("Получение всех запросов");
+        } else if (!unique && uris != null){
+            log.info("Получение всех запросов по uri");
 
+            List<String> uriList = List.of(uris);
             projections =  repository.findAllHitsByDateAndUri(startTime, endTime, uriList);
+        } else if (unique && uris == null) {
+            log.info("Получение уникальных запросов по всем uri");
+
+            projections = repository.findUniqueHitsByDate(startTime, endTime);
+        } else {
+            log.info("Получение всего списка запросов");
+
+            projections = repository.findAllHitsByDate(startTime, endTime);
         }
 
         List<ViewStats> views = projections.stream()
