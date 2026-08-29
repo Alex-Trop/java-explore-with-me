@@ -14,6 +14,7 @@ public class DateTimeFormatValidator implements ConstraintValidator<DateTimeForm
     public void initialize(DateTimeFormat constraintAnnotation) {
         this.pattern = constraintAnnotation.pattern();
     }
+
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         if (value == null) {
