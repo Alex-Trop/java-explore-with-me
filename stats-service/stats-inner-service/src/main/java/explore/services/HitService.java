@@ -59,7 +59,7 @@ public class HitService {
 
             List<String> uriList = List.of(uris);
             projections = repository.findUniqueHitsByDateAndUri(startTime, endTime, uriList);
-        } else if (!unique && uris != null){
+        } else if (!unique && uris != null) {
             log.info("Получение всех запросов по uri");
 
             List<String> uriList = List.of(uris);
