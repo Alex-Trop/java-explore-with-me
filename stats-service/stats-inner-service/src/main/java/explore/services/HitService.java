@@ -3,10 +3,8 @@ package explore.services;
 import dto.hits.HitDto;
 import dto.views.ViewStats;
 import static dto.DateTimeFormat.DATE_TIME_PATTERN;
-import static exceptions.ErrorDetails.HIT_DUPLICATE_ERROR;
 
 import dto.views.ViewStatsProjection;
-import exceptions.ResourceAlreadyExistsError;
 import lombok.extern.slf4j.Slf4j;
 import explore.mappers.HitMapper;
 import explore.models.Hit;
@@ -33,11 +31,6 @@ public class HitService {
         log.info("Сохранение hit = ", hitDto);
 
         Hit newHit = mapper.toHit(hitDto);
-
-        if (repository.existsByAppAndUriAndIpAndTimestamp(newHit.getApp(), newHit.getUri(), newHit.getIp(), newHit.getTimestamp())) {
-            throw new ResourceAlreadyExistsError(HIT_DUPLICATE_ERROR);
-        }
-
         Hit savedHit = repository.save(newHit);
 
         log.info("Сохранен hit = ", savedHit);
