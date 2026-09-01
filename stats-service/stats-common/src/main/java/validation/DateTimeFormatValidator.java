@@ -7,11 +7,11 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-public class DateTimeFormatValidator implements ConstraintValidator<DateTimeFormat, String> {
+public class DateTimeFormatValidator implements ConstraintValidator<ValidDateTimeFormat, String> {
     String pattern;
 
     @Override
-    public void initialize(DateTimeFormat constraintAnnotation) {
+    public void initialize(ValidDateTimeFormat constraintAnnotation) {
         this.pattern = constraintAnnotation.pattern();
     }
 

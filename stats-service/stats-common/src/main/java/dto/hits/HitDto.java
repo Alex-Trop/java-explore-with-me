@@ -4,8 +4,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
+import validation.ValidDateTimeFormat;
 
+import static dto.DateTimeFormat.DATE_TIME_PATTERN;
 import static exceptions.ErrorDetails.*;
 
 @Data
@@ -22,6 +23,6 @@ public class HitDto {
     private String ip;
 
     @NotNull(message = TIME_ERROR)
-    @DateTimeFormat
+    @ValidDateTimeFormat(pattern = DATE_TIME_PATTERN)
     private String timestamp;
 }
