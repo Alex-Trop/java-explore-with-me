@@ -7,8 +7,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 @Service
@@ -26,15 +24,12 @@ public class ViewStatsClient extends BaseClient {
     }
 
     public ResponseEntity<Object> getStats(String start, String end, String[] uris, @Nullable Boolean unique) {
-        String encodedStart = URLEncoder.encode(start, StandardCharsets.UTF_8);
-        String encodedEnd = URLEncoder.encode(end, StandardCharsets.UTF_8);
         Map<String, Object> parameters = Map.of(
-                "start", encodedStart,
-                "end", encodedEnd,
+                "start", start,
+                "end", end,
                 "uris", uris,
                 "unique", unique
         );
-
         return get("", parameters);
     }
 }
