@@ -107,7 +107,7 @@ public class PrivateService {
                 .orElseThrow(() -> new NotFoundError("User with id=" + userId + " was not found."));
         LocalDateTime eventDate = LocalDateTime.parse(dto.getEventDate(), formatter);
 
-        if (eventDate.plusHours(2).isBefore(now)) {
+        if (eventDate.plusHours(2).isAfter(now)) {
             log.info("Дата и время на которые намечено событие не может быть раньше, " +
                     "чем через два часа от текущего момента: " + now.format(formatter));
             throw new DateRequestException("Field: eventDate. Error: Дата и время на которые намечено событие " +
@@ -197,7 +197,7 @@ public class PrivateService {
             throw new IncorrectRequestError("Only pending or canceled events can be changed");
         }
         if (request.getEventDate() != null) {
-            if (LocalDateTime.parse(request.getEventDate(), formatter).plusHours(2).isBefore(now)) {
+            if (LocalDateTime.parse(request.getEventDate(), formatter).plusHours(2).isAfter(now)) {
                 log.info("Дата и время на которые намечено событие не может быть раньше, " +
                         "чем через два часа от текущего момента: " + now.format(formatter));
                 throw new DateRequestException("Field: eventDate. Error: Дата и время на которые намечено событие " +
