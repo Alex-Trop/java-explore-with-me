@@ -222,6 +222,13 @@ public class PrivateService {
             foundEvent.setLocation(location);
             log.info("Локация обновлена");
         }
+        if (request.getStateAction() != null) {
+            if (request.getStateAction().equals(StateAction.SEND_TO_REVIEW)) {
+                foundEvent.setState(State.PENDING);
+            } else if (request.getStateAction().equals(StateAction.CANCEL_REVIEW)) {
+                foundEvent.setState(State.CANCELED);
+            }
+        }
 
         EventFullDto foundEventDto = eventMapper.toEventFullDto(eventRepository.save(foundEvent));
 
@@ -297,7 +304,7 @@ public class PrivateService {
                 .filter(eventRequest -> !eventRequest.getStatus().equals(Status.PENDING))
                 .collect(Collectors.toList());
 
-        if (wrongStatusRequests != null) {
+        if (!wrongStatusRequests.isEmpty()) {
             throw new IncorrectRequestError("Wrong status for requestIds");
         }
 
@@ -457,12 +464,18 @@ public class PrivateService {
         }
         log.info("Проверка запроса завершена");
 
+        Status newStatus = Status.PENDING;
+
+        if (event.getParticipantLimit() == 0 || !event.getRequestModeration()) {
+            newStatus = Status.CONFIRMED;
+        }
+
         ParticipationRequest newRequest = new ParticipationRequest(
                 null,
                 event,
                 requester,
                 now,
-                event.getRequestModeration() ? Status.PENDING : Status.CONFIRMED
+                newStatus
         );
         ParticipationRequest savedRequest = requestRepository.save(newRequest);
 

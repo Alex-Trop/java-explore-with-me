@@ -13,4 +13,8 @@ public interface PublicCompilationRepository extends JpaRepository<Compilation, 
             "JOIN FETCH c.events " +
             "WHERE c.pinned = :pinned")
     List<Compilation> findAllByPinned(@Param("pinned") boolean pinned);
+
+    @Query("SELECT c FROM Compilation AS c " +
+            "JOIN FETCH c.events")
+    List<Compilation> findAll();
 }

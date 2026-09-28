@@ -47,11 +47,17 @@ public class PublicService {
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN);
 
-    public List<CompilationDto> getCompilations(boolean pinned, int from, int size) {
+    public List<CompilationDto> getCompilations(Boolean pinned, int from, int size) {
         log.info("Поступил запрос на получение " + size + " подборок, не считая первые " + from + "со статусом " +
                 "pinned=" + pinned);
 
-        List<Compilation> foundCompilations = compilationRepository.findAllByPinned(pinned);
+        List<Compilation> foundCompilations = new ArrayList<>();
+
+        if (pinned != null) {
+            foundCompilations = compilationRepository.findAllByPinned(pinned);
+        } else {
+            foundCompilations = compilationRepository.findAll();
+        }
 
         if (foundCompilations.isEmpty()) {
             log.info("Ничего не найдено");
@@ -370,6 +376,16 @@ public class PublicService {
         LocalDateTime now = LocalDateTime.now();
         String rangeEnd = now.format(formatter);
         String uri = "/events/" + event.getId();
+        HitDto hitDto = new HitDto(
+                "ewm-main-service",
+                uri,
+                ip,
+                now.format(formatter)
+        );
+
+        hitClient.postHit(hitDto);
+        log.info("Информация о просмотре успешно отправлена в сервис статистики");
+
         String[] uris = new String[]{uri};
         Object body = viewStatsClient.getStats(rangeStart, rangeEnd, uris, false).getBody();
         ObjectMapper mapper = new ObjectMapper();
@@ -382,15 +398,6 @@ public class PublicService {
 
         eventDto.setViews(views);
         log.info("EventShortDto полностью загружен");
-
-        HitDto hitDto = new HitDto(
-                "ewm-main-service",
-                uri,
-                ip,
-                now.format(formatter)
-        );
-        hitClient.postHit(hitDto);
-        log.info("Информация о просмотре успешно отправлена в сервис статистики");
         return eventDto;
     }
 }

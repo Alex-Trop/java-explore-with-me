@@ -101,21 +101,38 @@ public class AdminService {
                 + "с " + rangeStart + " по " + rangeEnd
                 + ", не считая первые " + from + " событий.");
 
-        LocalDateTime start = LocalDateTime.parse(rangeStart, formatter);
-        LocalDateTime end = LocalDateTime.parse(rangeEnd, formatter);
         Integer[] usersId = Arrays.stream(users)
                 .boxed()
                 .toArray(Integer[]::new);
         Integer[] categoriesId = Arrays.stream(categories)
                 .boxed()
                 .toArray(Integer[]::new);
-        State[] states = new State[statesString.length];
+        Set<State> statesSet = new HashSet<>();
 
-        for (int i = 0; i < statesString.length; i++) {
-            states[i] = State.of(statesString[i]);
+        if (statesString != null) {
+            for (int i = 0; i < statesString.length; i++) {
+                statesSet.add(State.of(statesString[i]));
+            }
+        } else {
+            statesSet.addAll(Arrays.stream(State.values()).toList());
         }
 
-        List<Event> foundEvents = eventRepository.findFilteredEvents(usersId, states, categoriesId, start, end);
+        State[] states = statesSet.toArray(new State[statesSet.size()]);
+        LocalDateTime start;
+        LocalDateTime end;
+        List<Event> foundEvents;
+
+        if (rangeStart == null) {
+            start = LocalDateTime.now();
+        } else {
+            start = LocalDateTime.parse(rangeStart, formatter);
+        }
+        if (rangeEnd != null) {
+            end = LocalDateTime.parse(rangeEnd, formatter);
+            foundEvents = eventRepository.findFilteredEvents(usersId, states, categoriesId, start, end);
+        } else {
+            foundEvents = eventRepository.findFilteredUpcomingEvents(usersId, states, categoriesId, start);
+        }
 
         if (foundEvents.isEmpty()) {
             log.info("События не найдены");
@@ -249,10 +266,16 @@ public class AdminService {
         log.info("Поступил запрос на получение списка из " + size + " пользователей с id=" + ids
                 + ", не считая первые " + from + "пользователей");
 
-        Integer[] usersId = Arrays.stream(ids)
-                .boxed()
-                .toArray(Integer[]::new);
-        List<User> foundUsers = userRepository.findFilteredUsers(usersId);
+        List<User> foundUsers = new ArrayList<>();
+
+        if (ids != null) {
+            Integer[] usersId = Arrays.stream(ids)
+                    .boxed()
+                    .toArray(Integer[]::new);
+            foundUsers = userRepository.findFilteredUsers(usersId);
+        } else {
+            foundUsers = userRepository.findAll();
+        }
 
         if (foundUsers.isEmpty()) {
             log.info("Пользователи не найдены");
@@ -295,7 +318,7 @@ public class AdminService {
     public CompilationDto addCompilation(NewCompilationDto newDto) {
         log.info("Поступил запрос на добавление подборки: " + newDto);
 
-        Compilation newCompilation = new Compilation(null, newDto.getPinned(), newDto.getTitle(), null);
+        Compilation newCompilation = new Compilation(null, newDto.getPinned(), newDto.getTitle(), new HashSet<>());
 
         if (newDto.getEvents() != null) {
             Set<Integer> events = new HashSet<>(newDto.getEvents());

@@ -16,7 +16,7 @@ public class SortFormatValidator implements ConstraintValidator<ValidSortFormat,
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         if (value == null) {
-            return false;
+            return true;
         }
         return Arrays.stream(sortParameters)
                 .anyMatch(sortParameter -> sortParameter.equalsIgnoreCase(value));

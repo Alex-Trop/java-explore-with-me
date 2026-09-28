@@ -43,7 +43,7 @@ public class PrivateController {
     @PatchMapping("/{userId}/events/{eventId}")
     public ResponseEntity<EventFullDto> updateEvent(@PathVariable int userId,
                                                     @PathVariable int eventId,
-                                                    @RequestBody UpdateEventUserRequest request) {
+                                                    @RequestBody @Valid UpdateEventUserRequest request) {
         return ResponseEntity.ok(service.updateEvent(userId, eventId, request));
     }
 
@@ -56,7 +56,7 @@ public class PrivateController {
     @PatchMapping("/{userId}/events/{eventId}/requests")
     public ResponseEntity<EventRequestStatusUpdateResult> updateUserRequest(@PathVariable int userId,
                                                                             @PathVariable int eventId,
-                                                                            @RequestBody EventRequestStatusUpdateRequest request) {
+                                                                            @RequestBody @Valid EventRequestStatusUpdateRequest request) {
         return ResponseEntity.ok(service.updateUserRequest(userId, eventId, request));
     }
 

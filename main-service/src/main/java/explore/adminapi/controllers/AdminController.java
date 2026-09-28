@@ -48,10 +48,10 @@ public class AdminController {
     //СОБЫТИЯ
     @GetMapping("/events")
     public ResponseEntity<List<EventFullDto>> getEventsFiltered(@RequestParam(name = "users") int[] users,
-                                                @RequestParam(name = "states") String[] states,
+                                                @RequestParam(name = "states", required = false) String[] states,
                                                 @RequestParam(name = "categories") int[] categories,
-                                                @RequestParam(name = "rangeStart") @ValidDateTimeFormat(pattern = DATE_TIME_PATTERN) String rangeStart,
-                                                @RequestParam(name = "rangeEnd") @ValidDateTimeFormat(pattern = DATE_TIME_PATTERN) String rangeEnd,
+                                                @RequestParam(name = "rangeStart", required = false) @ValidDateTimeFormat(pattern = DATE_TIME_PATTERN) String rangeStart,
+                                                @RequestParam(name = "rangeEnd", required = false) @ValidDateTimeFormat(pattern = DATE_TIME_PATTERN) String rangeEnd,
                                                 @RequestParam(name = "from", defaultValue = "0") int from,
                                                 @RequestParam(name = "size", defaultValue = "10") int size) {
         return ResponseEntity
@@ -60,7 +60,7 @@ public class AdminController {
     }
 
     @PatchMapping("/events/{eventId}")
-    public ResponseEntity<EventFullDto> updateEvent(@PathVariable int eventId, @RequestBody UpdateEventAdminRequest adminRequest) {
+    public ResponseEntity<EventFullDto> updateEvent(@PathVariable int eventId, @RequestBody @Valid UpdateEventAdminRequest adminRequest) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.updateEvent(eventId, adminRequest));
@@ -68,7 +68,7 @@ public class AdminController {
 
     //ПОЛЬЗОВАТЕЛИ
     @GetMapping("/users")
-    public ResponseEntity<List<UserDto>> getUsersFiltered(@RequestParam(name = "ids") int[] ids,
+    public ResponseEntity<List<UserDto>> getUsersFiltered(@RequestParam(name = "ids", required = false) int[] ids,
                                           @RequestParam(name = "from", defaultValue = "0") int from,
                                           @RequestParam(name = "size", defaultValue = "10") int size) {
         return ResponseEntity

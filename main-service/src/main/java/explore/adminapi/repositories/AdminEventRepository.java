@@ -26,4 +26,17 @@ public interface AdminEventRepository extends JpaRepository<Event, Integer> {
                                    @Param("categories") Integer[] categories,
                                    @Param("start")LocalDateTime start,
                                    @Param("end")LocalDateTime end);
+
+    @Query("SELECT e FROM Event AS e " +
+            "JOIN FETCH e.category " +
+            "JOIN FETCH e.location " +
+            "JOIN FETCH e.initiator " +
+            "WHERE e.initiator.id IN :users " +
+            "AND e.state IN :states " +
+            "AND e.category.id IN :categories " +
+            "AND e.eventDate >= :start")
+    List<Event> findFilteredUpcomingEvents(@Param("users") Integer[] users,
+                                           @Param("states") State[] states,
+                                           @Param("categories") Integer[] categories,
+                                           @Param("start")LocalDateTime start);
 }
