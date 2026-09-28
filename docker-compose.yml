@@ -48,6 +48,7 @@ services:
         condition: service_started
     environment:
       - STATS_SERVER_URL=http://stats-server:9090
+      - STATS_SERVICE_URL=http://stats-server:9090 #ДОБАВИЛА ДЛЯ ИСПОЛЬЗОВАНИЯ КЛИЕНТА
       - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm
       - SPRING_DATASOURCE_USERNAME=ewm
       - SPRING_DATASOURCE_PASSWORD=ewm

@@ -1,3 +1,5 @@
+package explore;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -24,12 +26,13 @@ public class ViewStatsClient extends BaseClient {
     }
 
     public ResponseEntity<Object> getStats(String start, String end, String[] uris, @Nullable Boolean unique) {
+        String urisParam = (uris != null && uris.length > 0) ? String.join(",", uris) : null;
         Map<String, Object> parameters = Map.of(
                 "start", start,
                 "end", end,
-                "uris", uris,
+                "uris", urisParam != null ? urisParam : "",
                 "unique", unique
         );
-        return get("", parameters);
+        return get("?start={start}&end={end}&uris={uris}&unique={unique}", parameters);
     }
 }
