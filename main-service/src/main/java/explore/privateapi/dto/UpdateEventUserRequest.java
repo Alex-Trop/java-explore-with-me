@@ -1,6 +1,7 @@
 package explore.privateapi.dto;
 
 import explore.dtos.LocationDto;
+import explore.validation.ValidDateTimeFormat;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -15,6 +16,7 @@ public class UpdateEventUserRequest {
     @Size(min = 20, max = 7000)
     private String description;
 
+    @ValidDateTimeFormat
     private String eventDate;
 
     private LocationDto location;

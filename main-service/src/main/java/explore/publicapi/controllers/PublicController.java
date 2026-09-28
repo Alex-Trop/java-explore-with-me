@@ -22,7 +22,7 @@ public class PublicController {
     private final PublicService service;
 
     @GetMapping("/compilations")
-    public ResponseEntity<List<CompilationDto>> getCompilations(@RequestParam(name = "pinned", required = false) boolean pinned,
+    public ResponseEntity<List<CompilationDto>> getCompilations(@RequestParam(name = "pinned", required = false) Boolean pinned,
                                                                 @RequestParam(name = "from", defaultValue = "0") int from,
                                                                 @RequestParam(name = "size", defaultValue = "10") int size) {
         return ResponseEntity.ok(service.getCompilations(pinned, from, size));
@@ -45,9 +45,9 @@ public class PublicController {
     }
 
     @GetMapping("/events")
-    public ResponseEntity<List<EventShortDto>> getEvents(@RequestParam(name = "text") String text,
+    public ResponseEntity<List<EventShortDto>> getEvents(@RequestParam(name = "text", defaultValue = "") String text,
                                                          @RequestParam(name = "categories") Integer[] categories,
-                                                         @RequestParam(name = "paid") boolean paid,
+                                                         @RequestParam(name = "paid") Boolean paid,
                                                          @RequestParam(name = "rangeStart", required = false) @ValidDateTimeFormat(pattern = DATE_TIME_PATTERN) String rangeStart,
                                                          @RequestParam(name = "rangeEnd", required = false) @ValidDateTimeFormat(pattern = DATE_TIME_PATTERN) String rangeEnd,
                                                          @RequestParam(name = "onlyAvailable", defaultValue = "false") boolean onlyAvailable,

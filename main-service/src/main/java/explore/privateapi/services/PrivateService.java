@@ -344,7 +344,7 @@ public class PrivateService {
                 int participantLimit = event.getParticipantLimit();
 
                for (int i = 0; i < eventRequests.size(); i++) {
-                   if (confirmedRequests <= participantLimit) {
+                   if (confirmedRequests < participantLimit) {
                        eventRequests.get(i).setStatus(Status.CONFIRMED);
                        confirmedRequests++;
                    } else {

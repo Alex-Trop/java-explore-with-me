@@ -1,6 +1,7 @@
 package explore.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -14,6 +15,7 @@ public class EventShortDto {
     private String annotation;
 
     @NotNull
+    @JsonProperty("category")
     private CategoryDto categoryDto;
 
     private int confirmedRequests;

@@ -54,4 +54,13 @@ public class MainExceptionHandler {
 
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(DateRequestException.class)
+    public ResponseEntity<ApiError> handleIncorrectDateRequest(DateRequestException e) {
+        log.warn("DateRequestException: {}" + e.getMessage());
+
+        ApiError error = new ApiError(e.getMessage(), e.getReason());
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
 }

@@ -1,11 +1,10 @@
 package explore.adminapi.dto;
 
 import explore.dtos.LocationDto;
+import explore.validation.ValidDateTimeFormat;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-
-import java.time.LocalDateTime;
 
 @Data
 public class UpdateEventAdminRequest {
@@ -17,7 +16,8 @@ public class UpdateEventAdminRequest {
     @Size(min = 20, max = 7000)
     private String description;
 
-    private LocalDateTime eventDate;
+    @ValidDateTimeFormat
+    private String eventDate;
 
     private LocationDto location;
 

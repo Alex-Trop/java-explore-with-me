@@ -208,6 +208,14 @@ public class AdminService {
                         "published");
             }
         }
+        if (adminRequest.getEventDate() != null) {
+            if (LocalDateTime.parse(adminRequest.getEventDate(), formatter).plusHours(2).isAfter(now)) {
+                log.info("Дата и время на которые намечено событие не может быть раньше, " +
+                        "чем через два часа от текущего момента: " + now.format(formatter));
+                throw new IncorrectRequestError("Field: eventDate. Error: Дата и время на которые намечено событие " +
+                        "не может быть раньше, чем через два часа от текущего момента");
+            }
+        }
         eventMapper.updateEventFromAdminRequest(adminRequest, foundEvent);
         log.info("Автоматическое обновление полей произведено");
         if (adminRequest.getCategory() != null) {
@@ -284,6 +292,8 @@ public class AdminService {
         log.info("Найдено " + foundUsers.size() + " пользователей.");
 
         List<UserDto> userResults = foundUsers.stream()
+                .skip(from)
+                .limit(size)
                 .map(user -> userMapper.toUserDto(user))
                 .collect(Collectors.toList());
 
@@ -318,7 +328,11 @@ public class AdminService {
     public CompilationDto addCompilation(NewCompilationDto newDto) {
         log.info("Поступил запрос на добавление подборки: " + newDto);
 
-        Compilation newCompilation = new Compilation(null, newDto.getPinned(), newDto.getTitle(), new HashSet<>());
+        Compilation newCompilation = new Compilation(
+                null,
+                (newDto.getPinned() == null) ? false : newDto.getPinned(),
+                newDto.getTitle(),
+                new HashSet<>());
 
         if (newDto.getEvents() != null) {
             Set<Integer> events = new HashSet<>(newDto.getEvents());

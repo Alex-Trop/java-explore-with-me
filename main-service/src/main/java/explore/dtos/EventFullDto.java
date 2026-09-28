@@ -1,6 +1,7 @@
 package explore.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import explore.models.Location;
 import explore.models.State;
 import jakarta.validation.constraints.NotNull;
@@ -18,6 +19,7 @@ public class EventFullDto {
     private String annotation;
 
     @NotNull
+    @JsonProperty("category")
     CategoryDto categoryDto;
 
     private int confirmedRequests;

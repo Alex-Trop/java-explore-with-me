@@ -9,6 +9,7 @@ import explore.ViewStatsClient;
 import explore.dtos.CategoryDto;
 import explore.dtos.CompilationDto;
 import explore.dtos.EventShortDto;
+import explore.exceptions.DateRequestException;
 import explore.exceptions.NotFoundError;
 import explore.models.Category;
 import explore.models.Compilation;
@@ -221,7 +222,7 @@ public class PublicService {
 
     public List<EventShortDto> getEventsFiltered(String text,
                                                  Integer[] categories,
-                                                 boolean paid,
+                                                 Boolean paid,
                                                  String rangeStart,
                                                  String rangeEnd,
                                                  boolean onlyAvailable,
@@ -242,20 +243,32 @@ public class PublicService {
             log.info("Одно или оба поля rangeStart-rangeEnd равно null");
             if (onlyAvailable) {
                 log.info("Поиск доступных событий после now");
-
-                foundEvents = eventRepository.findAvailableUpcompingEventsFiltered(text,
-                        categories,
-                        paid,
-                        now,
-                        State.PUBLISHED);
+                if (paid != null) {
+                    foundEvents = eventRepository.findAvailableUpcompingEventsFilteredAndPaid(text,
+                            categories,
+                            paid,
+                            now,
+                            State.PUBLISHED);
+                } else {
+                    foundEvents = eventRepository.findAvailableUpcompingEventsFilteredWithoutPaid(text,
+                            categories,
+                            now,
+                            State.PUBLISHED);
+                }
             } else {
                 log.info("Поиск всех событий после now");
-
-                foundEvents = eventRepository.findUpcompingEventsFiltered(text,
-                        categories,
-                        paid,
-                        now,
-                        State.PUBLISHED);
+                if (paid != null) {
+                    foundEvents = eventRepository.findUpcompingEventsFilteredAndPaid(text,
+                            categories,
+                            paid,
+                            now,
+                            State.PUBLISHED);
+                } else {
+                    foundEvents = eventRepository.findUpcompingEventsFilteredWithoutPaid(text,
+                            categories,
+                            now,
+                            State.PUBLISHED);
+                }
             }
         } else {
             LocalDateTime start = LocalDateTime.parse(rangeStart, formatter);
@@ -265,44 +278,40 @@ public class PublicService {
                 log.info("Диапазон дат задан верно");
                 if (onlyAvailable) {
                     log.info("Поиск доступных событий в заданном диапазоне");
-
-                    foundEvents = eventRepository.findAvailableEventsFilteredDateInBetween(text,
-                            categories,
-                            paid,
-                            start,
-                            end,
-                            State.PUBLISHED);
+                    if (paid != null) {
+                        foundEvents = eventRepository.findAvailableEventsFilteredDateInBetweenAndPaid(text,
+                                categories,
+                                paid,
+                                start,
+                                end,
+                                State.PUBLISHED);
+                    } else {
+                        foundEvents = eventRepository.findAvailableEventsFilteredDateInBetweenWithoutPaid(text,
+                                categories,
+                                start,
+                                end,
+                                State.PUBLISHED);
+                    }
                 } else {
                     log.info("Поиск всех событий в заданном диапазоне");
-
-                    foundEvents = eventRepository.findEventsFilteredDateInBetween(text,
-                            categories,
-                            paid,
-                            start,
-                            end,
-                            State.PUBLISHED);
+                    if (paid != null) {
+                        foundEvents = eventRepository.findEventsFilteredDateInBetweenAndPaid(text,
+                                categories,
+                                paid,
+                                start,
+                                end,
+                                State.PUBLISHED);
+                    } else {
+                        foundEvents = eventRepository.findEventsFilteredDateInBetweenWithoutPaid(text,
+                                categories,
+                                start,
+                                end,
+                                State.PUBLISHED);
+                    }
                 }
             } else {
-                log.info("Некорректный диапазон дат: rangeStart is NOT before rangeEnd");
-                if (onlyAvailable) {
-                    log.info("Поиск доступных событий после now");
-
-                    foundEvents = eventRepository.findAvailableUpcompingEventsFiltered(text,
-                            categories,
-                            paid,
-                            now,
-                            State.PUBLISHED);
-                } else {
-                    log.info("Поиск всех событий после now");
-
-                    foundEvents = eventRepository.findUpcompingEventsFiltered(text,
-                            categories,
-                            paid,
-                            now,
-                            State.PUBLISHED);
-                }
+                throw new DateRequestException("Некорректный диапазон дат: rangeStart is NOT before rangeEnd");
             }
-
         }
         if (foundEvents.isEmpty()) {
             log.info("Ничего не найдено");
@@ -340,7 +349,7 @@ public class PublicService {
 
             hitClient.postHit(hitDto);
         }
-        Object body = viewStatsClient.getStats(viewsStart, viewsEnd, uris, false).getBody();
+        Object body = viewStatsClient.getStats(viewsStart, viewsEnd, uris, true).getBody();
         ObjectMapper mapper = new ObjectMapper();
         List<ViewStats> allViewStats = mapper.convertValue(body, new TypeReference<List<ViewStats>>() {
         });
