@@ -35,7 +35,6 @@ public class Event {
     private String description;
 
     @NotNull
-    @FutureOrPresent
     @Column(name = "event_date")
     private LocalDateTime eventDate;
 
