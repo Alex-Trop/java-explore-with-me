@@ -6,7 +6,7 @@ import explore.models.Event;
 import explore.privateapi.dto.UpdateEventUserRequest;
 import org.mapstruct.*;
 
-@Mapper(componentModel = "spring", uses ={PrivateUserMapper.class, PrivateCategoryMapper.class})
+@Mapper(componentModel = "spring", uses = {PrivateUserMapper.class, PrivateCategoryMapper.class})
 public interface PrivateEventMapper {
     @Mapping(target = "views", constant = "0")
     @Mapping(target = "categoryDto", source = "category")

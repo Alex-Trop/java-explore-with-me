@@ -55,7 +55,6 @@ public class PublicController {
                                                          @RequestParam(name = "from", defaultValue = "0") int from,
                                                          @RequestParam(name = "size", defaultValue = "10") int size,
                                                          HttpServletRequest request) {
-        
         return ResponseEntity.ok(service.getEventsFiltered(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, request.getRemoteAddr()));
     }
 

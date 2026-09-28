@@ -111,7 +111,7 @@ public class AdminService {
                 .toArray(Integer[]::new);
         State[] states = new State[statesString.length];
 
-        for (int i = 0; i< statesString.length; i++) {
+        for (int i = 0; i < statesString.length; i++) {
             states[i] = State.of(statesString[i]);
         }
 
