@@ -106,7 +106,7 @@ public class PrivateService {
                 .orElseThrow(() -> new NotFoundError("User with id=" + userId + " was not found."));
         LocalDateTime eventDate = LocalDateTime.parse(dto.getEventDate(), formatter);
 
-        if (now.plusHours(2).isAfter(eventDate)) {
+        if (eventDate.plusHours(2).isAfter(now)) {
             log.info("Дата и время на которые намечено событие не может быть раньше, " +
                     "чем через два часа от текущего момента: " + now.format(formatter));
             throw new IncorrectRequestError("Field: eventDate. Error: Дата и время на которые намечено событие " +
@@ -127,7 +127,7 @@ public class PrivateService {
                 eventDate,
                 location,
                 dto.getPaid() == null ? false : dto.getPaid(),
-                dto.getParticipantLimit() > 0 ? dto.getParticipantLimit() : 0,
+                dto.getParticipantLimit(),
                 dto.getRequestModeration() == null ? true : dto.getRequestModeration(),
                 dto.getTitle(),
                 now,
@@ -194,6 +194,14 @@ public class PrivateService {
         }
         if (foundEvent.getState().equals(State.PUBLISHED)) {
             throw new IncorrectRequestError("Only pending or canceled events can be changed");
+        }
+        if (request.getEventDate() != null) {
+            if (LocalDateTime.parse(request.getEventDate(), formatter).plusHours(2).isAfter(now)) {
+                log.info("Дата и время на которые намечено событие не может быть раньше, " +
+                        "чем через два часа от текущего момента: " + now.format(formatter));
+                throw new IncorrectRequestError("Field: eventDate. Error: Дата и время на которые намечено событие " +
+                        "не может быть раньше, чем через два часа от текущего момента");
+            }
         }
         log.info("Событие найдено, проверка инициатора и статуса публикации успешно пройдена.");
         eventMapper.updateEventFromUserRequest(request, foundEvent);

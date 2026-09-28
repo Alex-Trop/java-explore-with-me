@@ -1,6 +1,7 @@
 package explore.privateapi.dto;
 
 import explore.dtos.LocationDto;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -20,6 +21,7 @@ public class UpdateEventUserRequest {
 
     private Boolean paid;
 
+    @PositiveOrZero
     private int participantLimit;
 
     private Boolean requestModeration;

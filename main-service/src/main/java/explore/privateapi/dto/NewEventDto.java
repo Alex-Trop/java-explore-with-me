@@ -1,7 +1,9 @@
 package explore.privateapi.dto;
 
 import explore.dtos.LocationDto;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -9,6 +11,7 @@ import lombok.Data;
 public class NewEventDto {
     @NotNull
     @Size(min = 20, max = 2000)
+    @NotBlank
     private String annotation;
 
     @NotNull
@@ -16,6 +19,7 @@ public class NewEventDto {
 
     @NotNull
     @Size(min = 20, max = 7000)
+    @NotBlank
     private String description;
 
     @NotNull
@@ -26,6 +30,7 @@ public class NewEventDto {
 
     private Boolean paid;
 
+    @PositiveOrZero
     private int participantLimit;
 
     private Boolean requestModeration;
