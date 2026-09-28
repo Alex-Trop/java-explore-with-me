@@ -2,6 +2,7 @@ package explore.publicapi.controllers;
 
 import explore.dtos.CategoryDto;
 import explore.dtos.CompilationDto;
+import explore.dtos.EventFullDto;
 import explore.dtos.EventShortDto;
 import explore.publicapi.services.PublicService;
 import explore.validation.ValidDateTimeFormat;
@@ -59,7 +60,7 @@ public class PublicController {
     }
 
     @GetMapping("/events/{id}")
-    public ResponseEntity<EventShortDto> getEventById(@PathVariable int id, HttpServletRequest request) {
+    public ResponseEntity<EventFullDto> getEventById(@PathVariable int id, HttpServletRequest request) {
         return ResponseEntity.ok(service.getEventById(id, request.getRemoteAddr()));
     }
 }

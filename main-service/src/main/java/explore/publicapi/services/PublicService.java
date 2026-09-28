@@ -8,6 +8,7 @@ import explore.HitClient;
 import explore.ViewStatsClient;
 import explore.dtos.CategoryDto;
 import explore.dtos.CompilationDto;
+import explore.dtos.EventFullDto;
 import explore.dtos.EventShortDto;
 import explore.exceptions.DateRequestException;
 import explore.exceptions.NotFoundError;
@@ -221,15 +222,15 @@ public class PublicService {
     }
 
     public List<EventShortDto> getEventsFiltered(String text,
-                                                 Integer[] categories,
-                                                 Boolean paid,
-                                                 String rangeStart,
-                                                 String rangeEnd,
-                                                 boolean onlyAvailable,
-                                                 String sort,
-                                                 int from,
-                                                 int size,
-                                                 String ip) {
+                                                Integer[] categories,
+                                                Boolean paid,
+                                                String rangeStart,
+                                                String rangeEnd,
+                                                boolean onlyAvailable,
+                                                String sort,
+                                                int from,
+                                                int size,
+                                                String ip) {
         log.info("Поступил запрос на получение списка событий с фильтрами: text=" + text + "; categories="
                 + categories + "; paid=" + paid + "; start=" + rangeStart + "; end=" + rangeEnd + "; onlyAvailable=" + onlyAvailable
                 + "; sort=" + sort + "; from=" + from + "; size=" + size);
@@ -376,7 +377,7 @@ public class PublicService {
         return foundDtos;
     }
 
-    public EventShortDto getEventById(Integer id, String ip) {
+    public EventFullDto getEventById(Integer id, String ip) {
         log.info("Поступил запрос на получение информации о событии id=" + id);
 
         Event event = eventRepository.findByIdAndState(id, State.PUBLISHED)
@@ -396,14 +397,14 @@ public class PublicService {
         log.info("Информация о просмотре успешно отправлена в сервис статистики");
 
         String[] uris = new String[]{uri};
-        Object body = viewStatsClient.getStats(rangeStart, rangeEnd, uris, false).getBody();
+        Object body = viewStatsClient.getStats(rangeStart, rangeEnd, uris, true).getBody();
         ObjectMapper mapper = new ObjectMapper();
         List<ViewStats> allViewStats = mapper.convertValue(body, new TypeReference<List<ViewStats>>() {});
         int views = allViewStats.isEmpty() ? 0 : allViewStats.getFirst().getHits();
 
         log.info("ViewStats загружен");
 
-        EventShortDto eventDto = eventMapper.toEventShortDto(event);
+        EventFullDto eventDto = eventMapper.toEventFullDto(event);
 
         eventDto.setViews(views);
         log.info("EventShortDto полностью загружен");

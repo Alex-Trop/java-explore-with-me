@@ -7,6 +7,7 @@ import explore.ViewStatsClient;
 import explore.dtos.EventFullDto;
 import explore.dtos.EventShortDto;
 import explore.dtos.LocationDto;
+import explore.exceptions.DateRequestException;
 import explore.exceptions.IncorrectRequestError;
 import explore.exceptions.NotFoundError;
 import explore.models.*;
@@ -106,10 +107,10 @@ public class PrivateService {
                 .orElseThrow(() -> new NotFoundError("User with id=" + userId + " was not found."));
         LocalDateTime eventDate = LocalDateTime.parse(dto.getEventDate(), formatter);
 
-        if (eventDate.plusHours(2).isAfter(now)) {
+        if (eventDate.plusHours(2).isBefore(now)) {
             log.info("Дата и время на которые намечено событие не может быть раньше, " +
                     "чем через два часа от текущего момента: " + now.format(formatter));
-            throw new IncorrectRequestError("Field: eventDate. Error: Дата и время на которые намечено событие " +
+            throw new DateRequestException("Field: eventDate. Error: Дата и время на которые намечено событие " +
                     "не может быть раньше, чем через два часа от текущего момента");
         }
 
@@ -196,10 +197,10 @@ public class PrivateService {
             throw new IncorrectRequestError("Only pending or canceled events can be changed");
         }
         if (request.getEventDate() != null) {
-            if (LocalDateTime.parse(request.getEventDate(), formatter).plusHours(2).isAfter(now)) {
+            if (LocalDateTime.parse(request.getEventDate(), formatter).plusHours(2).isBefore(now)) {
                 log.info("Дата и время на которые намечено событие не может быть раньше, " +
                         "чем через два часа от текущего момента: " + now.format(formatter));
-                throw new IncorrectRequestError("Field: eventDate. Error: Дата и время на которые намечено событие " +
+                throw new DateRequestException("Field: eventDate. Error: Дата и время на которые намечено событие " +
                         "не может быть раньше, чем через два часа от текущего момента");
             }
         }
@@ -351,6 +352,8 @@ public class PrivateService {
                        eventRequests.get(i).setStatus(Status.REJECTED);
                    }
                }
+               event.setConfirmedRequests(confirmedRequests);
+               eventRepository.save(event);
 
                List<ParticipationRequest> savedRequests = requestRepository.saveAll(eventRequests);
 

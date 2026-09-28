@@ -101,12 +101,20 @@ public class AdminService {
                 + "с " + rangeStart + " по " + rangeEnd
                 + ", не считая первые " + from + " событий.");
 
-        Integer[] usersId = Arrays.stream(users)
-                .boxed()
-                .toArray(Integer[]::new);
-        Integer[] categoriesId = Arrays.stream(categories)
-                .boxed()
-                .toArray(Integer[]::new);
+        Integer[] usersId = new Integer[]{};
+        Integer[] categoriesId = new Integer[]{};
+
+        if (users != null) {
+            usersId = Arrays.stream(users)
+                    .boxed()
+                    .toArray(Integer[]::new);
+        }
+        if (categories != null) {
+            categoriesId = Arrays.stream(categories)
+                    .boxed()
+                    .toArray(Integer[]::new);
+        }
+
         Set<State> statesSet = new HashSet<>();
 
         if (statesString != null) {
@@ -129,9 +137,17 @@ public class AdminService {
         }
         if (rangeEnd != null) {
             end = LocalDateTime.parse(rangeEnd, formatter);
-            foundEvents = eventRepository.findFilteredEvents(usersId, states, categoriesId, start, end);
+            if (users == null && categories == null && states == null) {
+                foundEvents = eventRepository.findAllEventsInPeriod(start, end);
+            } else {
+                foundEvents = eventRepository.findFilteredEvents(usersId, states, categoriesId, start, end);
+            }
         } else {
-            foundEvents = eventRepository.findFilteredUpcomingEvents(usersId, states, categoriesId, start);
+            if (users == null && categories == null && states == null) {
+                foundEvents = eventRepository.findAllUpcomingEvents(start);
+            } else {
+                foundEvents = eventRepository.findFilteredUpcomingEvents(usersId, states, categoriesId, start);
+            }
         }
 
         if (foundEvents.isEmpty()) {

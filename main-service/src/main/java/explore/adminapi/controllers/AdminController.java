@@ -47,9 +47,9 @@ public class AdminController {
 
     //СОБЫТИЯ
     @GetMapping("/events")
-    public ResponseEntity<List<EventFullDto>> getEventsFiltered(@RequestParam(name = "users") int[] users,
+    public ResponseEntity<List<EventFullDto>> getEventsFiltered(@RequestParam(name = "users", required = false) int[] users,
                                                 @RequestParam(name = "states", required = false) String[] states,
-                                                @RequestParam(name = "categories") int[] categories,
+                                                @RequestParam(name = "categories", required = false) int[] categories,
                                                 @RequestParam(name = "rangeStart", required = false) @ValidDateTimeFormat(pattern = DATE_TIME_PATTERN) String rangeStart,
                                                 @RequestParam(name = "rangeEnd", required = false) @ValidDateTimeFormat(pattern = DATE_TIME_PATTERN) String rangeEnd,
                                                 @RequestParam(name = "from", defaultValue = "0") int from,
