@@ -137,13 +137,13 @@ public class AdminService {
         }
         if (rangeEnd != null) {
             end = LocalDateTime.parse(rangeEnd, formatter);
-            if (users == null && categories == null && states == null) {
+            if (users == null && categories == null) {
                 foundEvents = eventRepository.findAllEventsInPeriod(start, end);
             } else {
                 foundEvents = eventRepository.findFilteredEvents(usersId, states, categoriesId, start, end);
             }
         } else {
-            if (users == null && categories == null && states == null) {
+            if (users == null && categories == null) {
                 foundEvents = eventRepository.findAllUpcomingEvents(start);
             } else {
                 foundEvents = eventRepository.findFilteredUpcomingEvents(usersId, states, categoriesId, start);
@@ -225,7 +225,7 @@ public class AdminService {
             }
         }
         if (adminRequest.getEventDate() != null) {
-            if (LocalDateTime.parse(adminRequest.getEventDate(), formatter).plusHours(2).isAfter(now)) {
+            if (LocalDateTime.parse(adminRequest.getEventDate(), formatter).isBefore(now.plusHours(2))) {
                 log.info("Дата и время на которые намечено событие не может быть раньше, " +
                         "чем через два часа от текущего момента: " + now.format(formatter));
                 throw new IncorrectRequestError("Field: eventDate. Error: Дата и время на которые намечено событие " +

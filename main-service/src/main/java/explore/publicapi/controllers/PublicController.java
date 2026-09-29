@@ -48,7 +48,7 @@ public class PublicController {
     @GetMapping("/events")
     public ResponseEntity<List<EventShortDto>> getEvents(@RequestParam(name = "text", defaultValue = "") String text,
                                                          @RequestParam(name = "categories") Integer[] categories,
-                                                         @RequestParam(name = "paid") Boolean paid,
+                                                         @RequestParam(name = "paid", required = false) Boolean paid,
                                                          @RequestParam(name = "rangeStart", required = false) @ValidDateTimeFormat(pattern = DATE_TIME_PATTERN) String rangeStart,
                                                          @RequestParam(name = "rangeEnd", required = false) @ValidDateTimeFormat(pattern = DATE_TIME_PATTERN) String rangeEnd,
                                                          @RequestParam(name = "onlyAvailable", defaultValue = "false") boolean onlyAvailable,

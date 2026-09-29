@@ -16,7 +16,6 @@ public class UpdateEventAdminRequest {
     @Size(min = 20, max = 7000)
     private String description;
 
-    @ValidDateTimeFormat
     private String eventDate;
 
     private LocationDto location;
