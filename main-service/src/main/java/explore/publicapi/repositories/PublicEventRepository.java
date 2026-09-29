@@ -18,7 +18,7 @@ public interface PublicEventRepository extends JpaRepository<Event, Integer> {
             "JOIN FETCH e.initiator " +
             "WHERE (LOWER(e.annotation) LIKE LOWER(CONCAT('%', :text, '%')) " +
             "OR LOWER(e.description) LIKE LOWER(CONCAT('%', :text, '%'))) " +
-            "AND e.category.id IN :categories " +
+            "AND (:categories IS NULL OR e.category.id IN :categories) " +
             "AND e.paid = :paid " +
             "AND e.eventDate BETWEEN :start AND :end " +
             "AND e.participantLimit > e.confirmedRequests " +
@@ -36,7 +36,7 @@ public interface PublicEventRepository extends JpaRepository<Event, Integer> {
             "JOIN FETCH e.initiator " +
             "WHERE (LOWER(e.annotation) LIKE LOWER(CONCAT('%', :text, '%')) " +
             "OR LOWER(e.description) LIKE LOWER(CONCAT('%', :text, '%'))) " +
-            "AND e.category.id IN :categories " +
+            "AND (:categories IS NULL OR e.category.id IN :categories) " +
             "AND e.eventDate BETWEEN :start AND :end " +
             "AND e.participantLimit > e.confirmedRequests " +
             "AND e.state = :state")
@@ -52,7 +52,7 @@ public interface PublicEventRepository extends JpaRepository<Event, Integer> {
             "JOIN FETCH e.initiator " +
             "WHERE (LOWER(e.annotation) LIKE LOWER(CONCAT('%', :text, '%')) " +
             "OR LOWER(e.description) LIKE LOWER(CONCAT('%', :text, '%'))) " +
-            "AND e.category.id IN :categories " +
+            "AND (:categories IS NULL OR e.category.id IN :categories) " +
             "AND e.paid = :paid " +
             "AND e.eventDate BETWEEN :start AND :end " +
             "AND e.state = :state")
@@ -69,7 +69,7 @@ public interface PublicEventRepository extends JpaRepository<Event, Integer> {
             "JOIN FETCH e.initiator " +
             "WHERE (LOWER(e.annotation) LIKE LOWER(CONCAT('%', :text, '%')) " +
             "OR LOWER(e.description) LIKE LOWER(CONCAT('%', :text, '%'))) " +
-            "AND e.category.id IN :categories " +
+            "AND (:categories IS NULL OR e.category.id IN :categories) " +
             "AND e.eventDate BETWEEN :start AND :end " +
             "AND e.state = :state")
     List<Event> findEventsFilteredDateInBetweenWithoutPaid(@Param("text") String text,
@@ -84,7 +84,7 @@ public interface PublicEventRepository extends JpaRepository<Event, Integer> {
             "JOIN FETCH e.initiator " +
             "WHERE (LOWER(e.annotation) LIKE LOWER(CONCAT('%', :text, '%')) " +
             "OR LOWER(e.description) LIKE LOWER(CONCAT('%', :text, '%'))) " +
-            "AND e.category.id IN :categories " +
+            "AND (:categories IS NULL OR e.category.id IN :categories) " +
             "AND e.paid = :paid " +
             "AND e.eventDate >= :now " +
             "AND e.participantLimit > e.confirmedRequests " +
@@ -101,7 +101,7 @@ public interface PublicEventRepository extends JpaRepository<Event, Integer> {
             "JOIN FETCH e.initiator " +
             "WHERE (LOWER(e.annotation) LIKE LOWER(CONCAT('%', :text, '%')) " +
             "OR LOWER(e.description) LIKE LOWER(CONCAT('%', :text, '%'))) " +
-            "AND e.category.id IN :categories " +
+            "AND (:categories IS NULL OR e.category.id IN :categories) " +
             "AND e.eventDate >= :now " +
             "AND e.participantLimit > e.confirmedRequests " +
             "AND e.state = :state")
@@ -116,7 +116,7 @@ public interface PublicEventRepository extends JpaRepository<Event, Integer> {
             "JOIN FETCH e.initiator " +
             "WHERE (LOWER(e.annotation) LIKE LOWER(CONCAT('%', :text, '%')) " +
             "OR LOWER(e.description) LIKE LOWER(CONCAT('%', :text, '%'))) " +
-            "AND e.category.id IN :categories " +
+            "AND (:categories IS NULL OR e.category.id IN :categories) " +
             "AND e.paid = :paid " +
             "AND e.eventDate >= :now " +
             "AND e.state = :state")
@@ -132,7 +132,7 @@ public interface PublicEventRepository extends JpaRepository<Event, Integer> {
             "JOIN FETCH e.initiator " +
             "WHERE (LOWER(e.annotation) LIKE LOWER(CONCAT('%', :text, '%')) " +
             "OR LOWER(e.description) LIKE LOWER(CONCAT('%', :text, '%'))) " +
-            "AND e.category.id IN :categories " +
+            "AND (:categories IS NULL OR e.category.id IN :categories) " +
             "AND e.eventDate >= :now " +
             "AND e.state = :state")
     List<Event> findUpcompingEventsFilteredWithoutPaid(@Param("text") String text,

@@ -244,7 +244,13 @@ public class PublicService {
         String viewsStart = rangeStart;
         LocalDateTime now = LocalDateTime.now();
         String viewsEnd = now.format(formatter);
-        List<Integer> categoriesId = Arrays.stream(categories).toList();
+        List<Integer> categoriesId;
+
+        if (categories == null || categories.length == 0) {
+            categoriesId = null;
+        } else {
+            categoriesId = Arrays.stream(categories).toList();
+        }
 
         if (rangeStart == null || rangeEnd == null) {
             log.info("Одно или оба поля rangeStart-rangeEnd равно null");
