@@ -174,24 +174,29 @@ public class AdminService {
 
         Object body = viewStatsClient.getStats(rangeStart, rangeEnd, uris, false).getBody();
 
-        log.info("Ответ модуля статистики получен");
+        if (body != null) {
+            log.info("Ответ модуля статистики получен");
 
-        ObjectMapper mapper = new ObjectMapper();
-        List<ViewStats> allViewStats = mapper.convertValue(body, new TypeReference<List<ViewStats>>() {});
+            ObjectMapper mapper = new ObjectMapper();
+            List<ViewStats> allViewStats = mapper.convertValue(body, new TypeReference<List<ViewStats>>() {});
 
-        log.info("Загружены ViewStats по всем событиям.");
+            log.info("Загружены ViewStats по всем событиям.");
 
-        Map<String, Integer> viewsMap = allViewStats.stream()
-                .collect(Collectors.toMap(ViewStats::getUri, ViewStats::getHits));
+            Map<String, Integer> viewsMap = allViewStats.stream()
+                    .collect(Collectors.toMap(ViewStats::getUri, ViewStats::getHits));
 
-        for (EventFullDto event : eventResults) {
-            String uri = "/events/" + event.getId();
+            for (EventFullDto event : eventResults) {
+                String uri = "/events/" + event.getId();
 
-            if (viewsMap.containsKey(uri)) {
-                event.setViews(viewsMap.get(uri));
-                log.info("Для события с id =" + event.getId() + " добавлено кол-во просмотров");
+                if (viewsMap.containsKey(uri)) {
+                    event.setViews(viewsMap.get(uri));
+                    log.info("Для события с id =" + event.getId() + " добавлено кол-во просмотров");
+                }
             }
+        } else {
+            log.info("Статитстика не получена");
         }
+
         log.info("Загрузка views для всех событий завершена");
         return eventResults;
     }
@@ -253,6 +258,10 @@ public class AdminService {
             log.info("Локация обновлена");
 
         }
+        if (adminRequest.getEventDate() != null) {
+            foundEvent.setEventDate(LocalDateTime.parse(adminRequest.getEventDate(), formatter));
+            log.info("Дата события обновлена");
+        }
         if (requestAction != null) {
             if (requestAction.equals(StateAction.PUBLISH_EVENT)) {
                 foundEvent.setState(State.PUBLISHED);
@@ -272,17 +281,22 @@ public class AdminService {
         String rangeStart = foundEvent.getCreatedOn().format(formatter);
         String rangeEnd = now.format(formatter);
         Object body = viewStatsClient.getStats(rangeStart, rangeEnd, uris, false).getBody();
+        int views = 0;
 
-        log.info("Ответ модуля статистики получен");
+        if (body != null) {
+            log.info("Ответ модуля статистики получен");
 
-        ObjectMapper mapper = new ObjectMapper();
-        List<ViewStats> allViewStats = mapper.convertValue(body, new TypeReference<List<ViewStats>>() {});
+            ObjectMapper mapper = new ObjectMapper();
+            List<ViewStats> allViewStats = mapper.convertValue(body, new TypeReference<List<ViewStats>>() {});
 
-        log.info("ViewStats загружены");
+            log.info("ViewStats загружены");
 
-        int views = allViewStats.isEmpty() ? 0 : allViewStats.getFirst().getHits();
+            views = allViewStats.isEmpty() ? 0 : allViewStats.getFirst().getHits();
 
-        updatedEventDto.setViews(views);
+            updatedEventDto.setViews(views);
+        } else {
+            log.info("Статистику получить не удалось");
+        }
         log.info("Поле views у события обновлено");
         return updatedEventDto;
     }

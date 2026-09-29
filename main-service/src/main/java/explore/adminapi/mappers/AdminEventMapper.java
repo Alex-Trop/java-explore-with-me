@@ -20,5 +20,6 @@ public interface AdminEventMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "location", ignore = true)
     @Mapping(target = "category", ignore = true)
+    @Mapping(target = "eventDate", ignore = true)
     void updateEventFromAdminRequest(UpdateEventAdminRequest adminRequest, @MappingTarget Event event);
 }

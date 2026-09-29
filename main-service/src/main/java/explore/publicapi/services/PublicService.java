@@ -100,33 +100,38 @@ public class PublicService {
         String[] uris = urisList.toArray(new String[0]);
         Object body = viewStatsClient.getStats(rangeStart, rangeEnd, uris, false).getBody();
 
-        log.info("Ответ модуля статистики получен. Поиск был с " + rangeStart + " по " + rangeEnd);
+        if (body != null) {
+            log.info("Ответ модуля статистики получен. Поиск был с " + rangeStart + " по " + rangeEnd);
 
-        ObjectMapper mapper = new ObjectMapper();
-        List<ViewStats> allViewStats = mapper.convertValue(body, new TypeReference<List<ViewStats>>() {
-        });
+            ObjectMapper mapper = new ObjectMapper();
+            List<ViewStats> allViewStats = mapper.convertValue(body, new TypeReference<List<ViewStats>>() {
+            });
 
-        log.info("ViewStats загружены");
+            log.info("ViewStats загружены");
 
-        Map<String, Integer> viewsMap = allViewStats.stream()
-                .collect(Collectors.toMap(ViewStats::getUri, ViewStats::getHits));
+            Map<String, Integer> viewsMap = allViewStats.stream()
+                    .collect(Collectors.toMap(ViewStats::getUri, ViewStats::getHits));
 
-        for (CompilationDto comp : compResults) {
-            List<EventShortDto> compEvents = comp.getEvents();
+            for (CompilationDto comp : compResults) {
+                List<EventShortDto> compEvents = comp.getEvents();
 
-            if (compEvents != null && !compEvents.isEmpty()) {
-                for (EventShortDto event : compEvents) {
-                    String uri = "/events/" + event.getId();
+                if (compEvents != null && !compEvents.isEmpty()) {
+                    for (EventShortDto event : compEvents) {
+                        String uri = "/events/" + event.getId();
 
-                    if (viewsMap.containsKey(uri)) {
-                        event.setViews(viewsMap.get(uri));
-                        log.info("Для события с id =" + event.getId() + " добавлено кол-во просмотров");
+                        if (viewsMap.containsKey(uri)) {
+                            event.setViews(viewsMap.get(uri));
+                            log.info("Для события с id =" + event.getId() + " добавлено кол-во просмотров");
+                        }
                     }
                 }
+                comp.setEvents(compEvents);
+                log.info("Для подборки с id=" + comp.getId() + "просмотры фильмов обновлены");
             }
-            comp.setEvents(compEvents);
-            log.info("Для подборки с id=" + comp.getId() + "просмотры фильмов обновлены");
+        } else {
+            log.info("Получить статистику не удалось");
         }
+
         log.info("Для всех подборок обновлено количество просмотров фильмов");
         return compResults;
     }
@@ -353,22 +358,28 @@ public class PublicService {
         }
         Object body = viewStatsClient.getStats(viewsStart, viewsEnd, uris, true).getBody();
         ObjectMapper mapper = new ObjectMapper();
-        List<ViewStats> allViewStats = mapper.convertValue(body, new TypeReference<List<ViewStats>>() {
-        });
 
-        log.info("ViewStats загружены");
+        if (body != null) {
+            List<ViewStats> allViewStats = mapper.convertValue(body, new TypeReference<List<ViewStats>>() {
+            });
 
-        Map<String, Integer> viewsMap = allViewStats.stream()
-                .collect(Collectors.toMap(ViewStats::getUri, ViewStats::getHits));
+            log.info("ViewStats загружены");
 
-        for (EventShortDto dto : foundDtos) {
-            String uri = "/events/" + dto.getId();
+            Map<String, Integer> viewsMap = allViewStats.stream()
+                    .collect(Collectors.toMap(ViewStats::getUri, ViewStats::getHits));
 
-            if (viewsMap.containsKey(uri)) {
-                dto.setViews(viewsMap.get(uri));
-                log.info("Для события с id=" + dto.getId() + " поле views обновлено");
+            for (EventShortDto dto : foundDtos) {
+                String uri = "/events/" + dto.getId();
+
+                if (viewsMap.containsKey(uri)) {
+                    dto.setViews(viewsMap.get(uri));
+                    log.info("Для события с id=" + dto.getId() + " поле views обновлено");
+                }
             }
+        } else {
+            log.info("Получить статистику не удалось");
         }
+
         log.info("Поле views во всех событиях обновлено");
         if (sort.equalsIgnoreCase("EVENT_DATE")) {
             foundDtos.sort(Comparator.comparing(EventShortDto::getEventDate));
@@ -400,14 +411,15 @@ public class PublicService {
         String[] uris = new String[]{uri};
         Object body = viewStatsClient.getStats(rangeStart, rangeEnd, uris, true).getBody();
         ObjectMapper mapper = new ObjectMapper();
-        List<ViewStats> allViewStats = mapper.convertValue(body, new TypeReference<List<ViewStats>>() {});
-        int views = allViewStats.isEmpty() ? 0 : allViewStats.getFirst().getHits();
-
-        log.info("ViewStats загружен");
-
         EventFullDto eventDto = eventMapper.toEventFullDto(event);
 
-        eventDto.setViews(views);
+        if (body != null) {
+            List<ViewStats> allViewStats = mapper.convertValue(body, new TypeReference<List<ViewStats>>() {});
+            int views = allViewStats.isEmpty() ? 0 : allViewStats.getFirst().getHits();
+
+            log.info("ViewStats загружен");
+            eventDto.setViews(views);
+        }
         log.info("EventShortDto полностью загружен");
         return eventDto;
     }
