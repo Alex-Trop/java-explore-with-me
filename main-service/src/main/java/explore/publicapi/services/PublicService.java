@@ -320,7 +320,7 @@ public class PublicService {
                 throw new DateRequestException("Некорректный диапазон дат: rangeStart is NOT before rangeEnd");
             }
         }
-        if (foundEvents.isEmpty()) {
+        if (foundEvents == null || foundEvents.isEmpty()) {
             log.info("Ничего не найдено");
             return new ArrayList<>();
         }
@@ -381,8 +381,12 @@ public class PublicService {
         }
 
         log.info("Поле views во всех событиях обновлено");
-        if (sort.equalsIgnoreCase("EVENT_DATE")) {
-            foundDtos.sort(Comparator.comparing(EventShortDto::getEventDate));
+        if (sort != null) {
+            if (sort.equalsIgnoreCase("EVENT_DATE")) {
+                foundDtos.sort(Comparator.comparing(EventShortDto::getEventDate));
+            } else {
+                foundDtos.sort(Comparator.comparing(EventShortDto::getViews));
+            }
         } else {
             foundDtos.sort(Comparator.comparing(EventShortDto::getViews));
         }

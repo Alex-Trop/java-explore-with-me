@@ -172,7 +172,24 @@ public class AdminService {
             uris[i] = uri;
         }
 
-        Object body = viewStatsClient.getStats(rangeStart, rangeEnd, uris, false).getBody();
+        Object body = new Object();
+
+        if (rangeStart != null && rangeEnd != null) {
+            body = viewStatsClient.getStats(rangeStart, rangeEnd, uris, false).getBody();
+        } else if (rangeStart == null && rangeEnd == null) {
+            rangeStart = foundEvents.stream()
+                    .sorted(Comparator.comparing(Event::getCreatedOn))
+                    .findFirst()
+                    .get().getCreatedOn()
+                    .format(formatter);
+            rangeEnd = foundEvents.stream()
+                    .sorted(Comparator.comparing(Event::getCreatedOn))
+                    .collect(Collectors.toList())
+                    .getLast()
+                    .getCreatedOn()
+                    .format(formatter);
+            body = viewStatsClient.getStats(rangeStart, rangeEnd, uris, false).getBody();
+        }
 
         if (body != null) {
             log.info("Ответ модуля статистики получен");
