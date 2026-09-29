@@ -54,7 +54,7 @@ public class HitService {
         LocalDateTime endTime = LocalDateTime.parse(end, formatter);
         List<ViewStatsProjection> projections;
 
-        if (!startTime.isBefore(endTime)) {
+        if (startTime.isAfter(endTime)) {
             throw new DateParameterError(TIME_PARAMETER_ERROR);
         }
         if (unique && uris != null) {
