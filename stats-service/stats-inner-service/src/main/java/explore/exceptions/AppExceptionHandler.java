@@ -2,6 +2,7 @@ package explore.exceptions;
 
 import exceptions.ErrorResponse;
 import exceptions.NotFoundError;
+import exceptions.DateParameterError;
 import exceptions.ResourceAlreadyExistsError;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -45,5 +46,11 @@ public class AppExceptionHandler {
     public ResponseEntity<ErrorResponse> handleThrowable(Throwable e) {
         log.error("Критическая ошибка: {}.", e.getMessage());
         return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(DateParameterError.class)
+    public ResponseEntity<ErrorResponse> handleParameterError(DateParameterError e) {
+        log.warn("Ошибка передачи параметров поиска DateParameterError: {}", e.getMessage());
+        return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 }

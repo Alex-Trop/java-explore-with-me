@@ -21,8 +21,8 @@ public class ViewStatsController {
     private final HitService service;
 
     @GetMapping
-    public ResponseEntity<Object> getStats(@RequestParam(name = "start") @ValidDateTimeFormat(pattern = DATE_TIME_PATTERN) String start,
-                                           @RequestParam(name = "end") @ValidDateTimeFormat(pattern = DATE_TIME_PATTERN) String end,
+    public ResponseEntity<Object> getStats(@RequestParam(name = "start", required = false) @ValidDateTimeFormat(pattern = DATE_TIME_PATTERN) String start,
+                                           @RequestParam(name = "end", required = false) @ValidDateTimeFormat(pattern = DATE_TIME_PATTERN) String end,
                                            @RequestParam(name = "uris", required = false) String[] uris,
                                            @RequestParam(name = "unique", defaultValue = "false") boolean unique) {
         List<ViewStats> viewStats = service.getViewStatsByDateAndUris(start, end, uris, unique);

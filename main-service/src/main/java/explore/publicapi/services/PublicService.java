@@ -406,7 +406,7 @@ public class PublicService {
                 "ewm-main-service",
                 uri,
                 ip,
-                now.format(formatter)
+                rangeEnd
         );
 
         hitClient.postHit(hitDto);
