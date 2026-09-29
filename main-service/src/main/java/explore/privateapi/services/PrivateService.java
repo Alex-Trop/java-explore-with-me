@@ -54,8 +54,12 @@ public class PrivateService {
         }
         log.info("Найдено событий:" + foundEvents.size());
 
-        List<EventShortDto> eventResults = foundEvents.stream()
+        List<Event> filteredEvents = foundEvents.stream()
                 .sorted(Comparator.comparing(Event::getCreatedOn))
+                .collect(Collectors.toList());
+        String rangeStart = filteredEvents.getFirst().getCreatedOn().format(formatter);
+        String rangeEnd = LocalDateTime.now().format(formatter);
+        List<EventShortDto> eventResults = filteredEvents.stream()
                 .skip(from)
                 .limit(size)
                 .map(eventMapper::toEventShortDto)
@@ -70,8 +74,6 @@ public class PrivateService {
             uris[i] = uri;
         }
 
-        String rangeStart = eventResults.getFirst().getEventDate().format(formatter);
-        String rangeEnd = LocalDateTime.now().format(formatter);
         Object body = viewStatsClient.getStats(rangeStart, rangeEnd, uris, false).getBody();
 
         log.info("Ответ модуля статистики получен");
