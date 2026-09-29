@@ -10,6 +10,7 @@ import explore.adminapi.repositories.*;
 import explore.dtos.CategoryDto;
 import explore.dtos.CompilationDto;
 import explore.dtos.EventFullDto;
+import explore.exceptions.DateRequestException;
 import explore.exceptions.IncorrectRequestError;
 import explore.exceptions.NotFoundError;
 import explore.models.*;
@@ -228,7 +229,7 @@ public class AdminService {
             if (LocalDateTime.parse(adminRequest.getEventDate(), formatter).isBefore(now.plusHours(2))) {
                 log.info("Дата и время на которые намечено событие не может быть раньше, " +
                         "чем через два часа от текущего момента: " + now.format(formatter));
-                throw new IncorrectRequestError("Field: eventDate. Error: Дата и время на которые намечено событие " +
+                throw new DateRequestException("Field: eventDate. Error: Дата и время на которые намечено событие " +
                         "не может быть раньше, чем через два часа от текущего момента");
             }
         }
