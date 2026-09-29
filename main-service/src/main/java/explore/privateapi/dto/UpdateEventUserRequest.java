@@ -1,7 +1,6 @@
 package explore.privateapi.dto;
 
 import explore.dtos.LocationDto;
-import explore.validation.ValidDateTimeFormat;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
