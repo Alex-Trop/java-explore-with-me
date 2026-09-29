@@ -45,7 +45,14 @@ public class HitService {
         log.info("Запрос на получение статистики с " + start + " по " + end + "для событий: " + uris);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN);
+        if (uris != null) {
+            List<String> uriList = List.of(uris);
 
+            if (uriList.isEmpty() || uriList.stream().anyMatch(uri -> uri.equalsIgnoreCase("/events"))) {
+                uris = null;
+                uriList = null;
+            }
+        }
         if (start == null || end == null) {
             throw new DateParameterError(TIME_PARAMETER_ERROR);
         }
