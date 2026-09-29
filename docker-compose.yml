@@ -14,9 +14,6 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/ewm
       - SPRING_DATASOURCE_USERNAME=ewm
       - SPRING_DATASOURCE_PASSWORD=ewm
-      - TZ=Asia/Novosibirsk
-      - JAVA_TOOL_OPTIONS=-Duser.timezone=Asia/Novosibirsk
-      - SPRING_JACKSON_TIME_ZONE=Asia/Novosibirsk
 
   stats-db:
     image: postgres:16.1
@@ -27,8 +24,6 @@ services:
       - POSTGRES_PASSWORD=ewm
       - POSTGRES_USER=ewm
       - POSTGRES_DB=ewm
-      - TZ=Asia/Novosibirsk
-      - PGTZ=Asia/Novosibirsk
     healthcheck:
       test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
       timeout: 5s
@@ -52,9 +47,6 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm
       - SPRING_DATASOURCE_USERNAME=ewm
       - SPRING_DATASOURCE_PASSWORD=ewm
-      - TZ=Asia/Novosibirsk
-      - JAVA_TOOL_OPTIONS=-Duser.timezone=Asia/Novosibirsk
-      - SPRING_JACKSON_TIME_ZONE=Asia/Novosibirsk
 
   ewm-db:
     image: postgres:16.1
@@ -65,8 +57,6 @@ services:
       - POSTGRES_PASSWORD=ewm
       - POSTGRES_USER=ewm
       - POSTGRES_DB=ewm
-      - TZ=Asia/Novosibirsk
-      - PGTZ=Asia/Novosibirsk
     healthcheck:
       test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
       timeout: 5s
