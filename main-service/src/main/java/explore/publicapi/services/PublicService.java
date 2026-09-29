@@ -371,9 +371,9 @@ public class PublicService {
         }
         log.info("Поле views во всех событиях обновлено");
         if (sort.equalsIgnoreCase("EVENT_DATE")) {
-            foundDtos.stream().sorted(Comparator.comparing(EventShortDto::getEventDate)).collect(Collectors.toList());
+            foundDtos.sort(Comparator.comparing(EventShortDto::getEventDate));
         } else {
-            foundDtos.stream().sorted(Comparator.comparing(EventShortDto::getViews)).collect(Collectors.toList());
+            foundDtos.sort(Comparator.comparing(EventShortDto::getViews));
         }
         return foundDtos;
     }
