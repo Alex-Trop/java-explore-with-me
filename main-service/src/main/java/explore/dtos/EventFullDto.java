@@ -7,12 +7,14 @@ import explore.models.State;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 import static explore.validation.DateTimeFormat.DATE_TIME_PATTERN;
 
 @Data
+@NoArgsConstructor
 public class EventFullDto {
     @NotNull
     @Size(min = 20, max = 2000)

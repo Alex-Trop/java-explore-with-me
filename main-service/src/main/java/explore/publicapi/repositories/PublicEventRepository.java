@@ -24,7 +24,7 @@ public interface PublicEventRepository extends JpaRepository<Event, Integer> {
             "AND e.participantLimit > e.confirmedRequests " +
             "AND e.state = :state")
     List<Event> findAvailableEventsFilteredDateInBetweenAndPaid(@Param("text") String text,
-                                                                @Param("categories") Integer[] categories,
+                                                                @Param("categories") List<Integer> categories,
                                                                 @Param("paid") Boolean paid,
                                                                 @Param("start") LocalDateTime start,
                                                                 @Param("end") LocalDateTime end,
@@ -41,7 +41,7 @@ public interface PublicEventRepository extends JpaRepository<Event, Integer> {
             "AND e.participantLimit > e.confirmedRequests " +
             "AND e.state = :state")
     List<Event> findAvailableEventsFilteredDateInBetweenWithoutPaid(@Param("text") String text,
-                                                                @Param("categories") Integer[] categories,
+                                                                @Param("categories") List<Integer> categories,
                                                                 @Param("start") LocalDateTime start,
                                                                 @Param("end") LocalDateTime end,
                                                                 @Param("state") State state);
@@ -57,7 +57,7 @@ public interface PublicEventRepository extends JpaRepository<Event, Integer> {
             "AND e.eventDate BETWEEN :start AND :end " +
             "AND e.state = :state")
     List<Event> findEventsFilteredDateInBetweenAndPaid(@Param("text") String text,
-                                                       @Param("categories") Integer[] categories,
+                                                       @Param("categories") List<Integer> categories,
                                                        @Param("paid") Boolean paid,
                                                        @Param("start") LocalDateTime start,
                                                        @Param("end") LocalDateTime end,
@@ -73,7 +73,7 @@ public interface PublicEventRepository extends JpaRepository<Event, Integer> {
             "AND e.eventDate BETWEEN :start AND :end " +
             "AND e.state = :state")
     List<Event> findEventsFilteredDateInBetweenWithoutPaid(@Param("text") String text,
-                                                       @Param("categories") Integer[] categories,
+                                                       @Param("categories") List<Integer> categories,
                                                        @Param("start") LocalDateTime start,
                                                        @Param("end") LocalDateTime end,
                                                        @Param("state") State state);
@@ -90,7 +90,7 @@ public interface PublicEventRepository extends JpaRepository<Event, Integer> {
             "AND e.participantLimit > e.confirmedRequests " +
             "AND e.state = :state")
     List<Event> findAvailableUpcompingEventsFilteredAndPaid(@Param("text") String text,
-                                                            @Param("categories") Integer[] categories,
+                                                            @Param("categories") List<Integer> categories,
                                                             @Param("paid") Boolean paid,
                                                             @Param("now") LocalDateTime now,
                                                             @Param("state") State state);
@@ -106,7 +106,7 @@ public interface PublicEventRepository extends JpaRepository<Event, Integer> {
             "AND e.participantLimit > e.confirmedRequests " +
             "AND e.state = :state")
     List<Event> findAvailableUpcompingEventsFilteredWithoutPaid(@Param("text") String text,
-                                                            @Param("categories") Integer[] categories,
+                                                            @Param("categories") List<Integer> categories,
                                                             @Param("now") LocalDateTime now,
                                                             @Param("state") State state);
 
@@ -121,7 +121,7 @@ public interface PublicEventRepository extends JpaRepository<Event, Integer> {
             "AND e.eventDate >= :now " +
             "AND e.state = :state")
     List<Event> findUpcompingEventsFilteredAndPaid(@Param("text") String text,
-                                                   @Param("categories") Integer[] categories,
+                                                   @Param("categories") List<Integer> categories,
                                                    @Param("paid") Boolean paid,
                                                    @Param("now") LocalDateTime now,
                                                    @Param("state") State state);
@@ -136,7 +136,7 @@ public interface PublicEventRepository extends JpaRepository<Event, Integer> {
             "AND e.eventDate >= :now " +
             "AND e.state = :state")
     List<Event> findUpcompingEventsFilteredWithoutPaid(@Param("text") String text,
-                                                   @Param("categories") Integer[] categories,
+                                                   @Param("categories") List<Integer> categories,
                                                    @Param("now") LocalDateTime now,
                                                    @Param("state") State state);
 

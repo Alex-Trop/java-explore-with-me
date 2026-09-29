@@ -4,12 +4,14 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 import static explore.validation.DateTimeFormat.DATE_TIME_PATTERN;
 
 @Data
+@NoArgsConstructor
 public class EventShortDto {
     @NotNull
     private String annotation;

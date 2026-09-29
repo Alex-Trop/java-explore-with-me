@@ -239,6 +239,7 @@ public class PublicService {
         String viewsStart = rangeStart;
         LocalDateTime now = LocalDateTime.now();
         String viewsEnd = now.format(formatter);
+        List<Integer> categoriesId = Arrays.stream(categories).toList();
 
         if (rangeStart == null || rangeEnd == null) {
             log.info("Одно или оба поля rangeStart-rangeEnd равно null");
@@ -246,13 +247,13 @@ public class PublicService {
                 log.info("Поиск доступных событий после now");
                 if (paid != null) {
                     foundEvents = eventRepository.findAvailableUpcompingEventsFilteredAndPaid(text,
-                            categories,
+                            categoriesId,
                             paid,
                             now,
                             State.PUBLISHED);
                 } else {
                     foundEvents = eventRepository.findAvailableUpcompingEventsFilteredWithoutPaid(text,
-                            categories,
+                            categoriesId,
                             now,
                             State.PUBLISHED);
                 }
@@ -260,13 +261,13 @@ public class PublicService {
                 log.info("Поиск всех событий после now");
                 if (paid != null) {
                     foundEvents = eventRepository.findUpcompingEventsFilteredAndPaid(text,
-                            categories,
+                            categoriesId,
                             paid,
                             now,
                             State.PUBLISHED);
                 } else {
                     foundEvents = eventRepository.findUpcompingEventsFilteredWithoutPaid(text,
-                            categories,
+                            categoriesId,
                             now,
                             State.PUBLISHED);
                 }
@@ -281,14 +282,14 @@ public class PublicService {
                     log.info("Поиск доступных событий в заданном диапазоне");
                     if (paid != null) {
                         foundEvents = eventRepository.findAvailableEventsFilteredDateInBetweenAndPaid(text,
-                                categories,
+                                categoriesId,
                                 paid,
                                 start,
                                 end,
                                 State.PUBLISHED);
                     } else {
                         foundEvents = eventRepository.findAvailableEventsFilteredDateInBetweenWithoutPaid(text,
-                                categories,
+                                categoriesId,
                                 start,
                                 end,
                                 State.PUBLISHED);
@@ -297,14 +298,14 @@ public class PublicService {
                     log.info("Поиск всех событий в заданном диапазоне");
                     if (paid != null) {
                         foundEvents = eventRepository.findEventsFilteredDateInBetweenAndPaid(text,
-                                categories,
+                                categoriesId,
                                 paid,
                                 start,
                                 end,
                                 State.PUBLISHED);
                     } else {
                         foundEvents = eventRepository.findEventsFilteredDateInBetweenWithoutPaid(text,
-                                categories,
+                                categoriesId,
                                 start,
                                 end,
                                 State.PUBLISHED);
@@ -370,9 +371,9 @@ public class PublicService {
         }
         log.info("Поле views во всех событиях обновлено");
         if (sort.equalsIgnoreCase("EVENT_DATE")) {
-            foundDtos.stream().sorted(Comparator.comparing(EventShortDto::getEventDate));
+            foundDtos.stream().sorted(Comparator.comparing(EventShortDto::getEventDate)).collect(Collectors.toList());
         } else {
-            foundDtos.stream().sorted(Comparator.comparing(EventShortDto::getViews));
+            foundDtos.stream().sorted(Comparator.comparing(EventShortDto::getViews)).collect(Collectors.toList());
         }
         return foundDtos;
     }

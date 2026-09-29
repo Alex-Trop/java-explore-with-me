@@ -21,9 +21,9 @@ public interface AdminEventRepository extends JpaRepository<Event, Integer> {
             "AND e.state IN :states " +
             "AND e.category.id IN :categories " +
             "AND e.eventDate BETWEEN :start AND :end")
-    List<Event> findFilteredEvents(@Param("users") Integer[] users,
-                                   @Param("states") State[] states,
-                                   @Param("categories") Integer[] categories,
+    List<Event> findFilteredEvents(@Param("users") List<Integer> users,
+                                   @Param("states") List<State> states,
+                                   @Param("categories") List<Integer> categories,
                                    @Param("start")LocalDateTime start,
                                    @Param("end")LocalDateTime end);
 
@@ -43,9 +43,9 @@ public interface AdminEventRepository extends JpaRepository<Event, Integer> {
             "AND e.state IN :states " +
             "AND e.category.id IN :categories " +
             "AND e.eventDate >= :start")
-    List<Event> findFilteredUpcomingEvents(@Param("users") Integer[] users,
-                                           @Param("states") State[] states,
-                                           @Param("categories") Integer[] categories,
+    List<Event> findFilteredUpcomingEvents(@Param("users") List<Integer> users,
+                                           @Param("states") List<State> states,
+                                           @Param("categories") List<Integer> categories,
                                            @Param("start")LocalDateTime start);
 
     @Query("SELECT e FROM Event AS e " +

@@ -102,18 +102,18 @@ public class AdminService {
                 + "с " + rangeStart + " по " + rangeEnd
                 + ", не считая первые " + from + " событий.");
 
-        Integer[] usersId = new Integer[]{};
-        Integer[] categoriesId = new Integer[]{};
+        List<Integer> usersId = new ArrayList<>();
+        List<Integer> categoriesId = new ArrayList<>();
 
         if (users != null) {
             usersId = Arrays.stream(users)
                     .boxed()
-                    .toArray(Integer[]::new);
+                    .collect(Collectors.toList());
         }
         if (categories != null) {
             categoriesId = Arrays.stream(categories)
                     .boxed()
-                    .toArray(Integer[]::new);
+                    .collect(Collectors.toList());
         }
 
         Set<State> statesSet = new HashSet<>();
@@ -126,7 +126,7 @@ public class AdminService {
             statesSet.addAll(Arrays.stream(State.values()).toList());
         }
 
-        State[] states = statesSet.toArray(new State[statesSet.size()]);
+        List<State> states = statesSet.stream().toList();
         LocalDateTime start;
         LocalDateTime end;
         List<Event> foundEvents;
