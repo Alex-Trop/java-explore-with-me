@@ -85,8 +85,6 @@ public class UtilPublicEventRepositoryImpl implements UtilPublicEventRepository 
 
         TypedQuery<Event> query = em.createQuery(jpql.toString(), Event.class)
                 .setParameter("text", text)
-                .setParameter("categories", categories)
-                .setParameter("paid", paid)
                 .setParameter("start", start)
                 .setParameter("end", end)
                 .setParameter("state", state)
@@ -130,8 +128,6 @@ public class UtilPublicEventRepositoryImpl implements UtilPublicEventRepository 
 
         TypedQuery<Event> query = em.createQuery(jpql.toString(), Event.class)
                 .setParameter("text", text)
-                .setParameter("categories", categories)
-                .setParameter("paid", paid)
                 .setParameter("now", now)
                 .setParameter("state", state)
                 .setFirstResult(from)
@@ -174,8 +170,6 @@ public class UtilPublicEventRepositoryImpl implements UtilPublicEventRepository 
 
         TypedQuery<Event> query = em.createQuery(jpql.toString(), Event.class)
                 .setParameter("text", text)
-                .setParameter("categories", categories)
-                .setParameter("paid", paid)
                 .setParameter("now", now)
                 .setParameter("state", state)
                 .setFirstResult(from)
