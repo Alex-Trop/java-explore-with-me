@@ -22,28 +22,38 @@ public class UtilPublicEventRepositoryImpl implements UtilPublicEventRepository 
                                                                 State state,
                                                                 int from,
                                                                 int size) {
-        String jpql = "SELECT e FROM Event AS " +
+        StringBuilder jpql = new StringBuilder("SELECT e FROM Event AS " +
                 "JOIN FETCH e.category " +
                 "JOIN FETCH e.location " +
                 "JOIN FETCH e.initiator " +
                 "WHERE (LOWER(e.annotation) LIKE LOWER(CONCAT('%', :text, '%')) " +
                 "OR LOWER(e.description) LIKE LOWER(CONCAT('%', :text, '%'))) " +
-                "AND (:categories IS NULL OR e.category.id IN :categories) " +
-                "AND (:paid IS NULL OR e.paid = :paid) " +
                 "AND e.eventDate BETWEEN :start AND :end " +
                 "AND e.participantLimit > e.confirmedRequests " +
-                "AND e.state = :state " +
-                "ORDER BY e.createdOn";
-        TypedQuery<Event> query = em.createQuery(jpql, Event.class)
+                "AND e.state = :state ");
+
+        if (categories != null) {
+            jpql.append("AND e.category.id IN :categories ");
+        }
+        if (paid != null) {
+            jpql.append("AND e.paid = :paid ");
+        }
+        jpql.append("ORDER BY e.createdOn");
+
+        TypedQuery<Event> query = em.createQuery(jpql.toString(), Event.class)
                 .setParameter("text", text)
-                .setParameter("categories", categories)
-                .setParameter("paid", paid)
                 .setParameter("start", start)
                 .setParameter("end", end)
                 .setParameter("state", state)
                 .setFirstResult(from)
                 .setMaxResults(size);
 
+        if (categories != null) {
+            query.setParameter("categories", categories);
+        }
+        if (paid != null) {
+            query.setParameter("paid", paid);
+        }
         return query.getResultList();
     }
 
@@ -56,18 +66,24 @@ public class UtilPublicEventRepositoryImpl implements UtilPublicEventRepository 
                                                        State state,
                                                        int from,
                                                        int size) {
-        String jpql = "SELECT e FROM Event AS e " +
+        StringBuilder jpql = new StringBuilder("SELECT e FROM Event AS e " +
                 "JOIN FETCH e.category " +
                 "JOIN FETCH e.location " +
                 "JOIN FETCH e.initiator " +
                 "WHERE (LOWER(e.annotation) LIKE LOWER(CONCAT('%', :text, '%')) " +
                 "OR LOWER(e.description) LIKE LOWER(CONCAT('%', :text, '%'))) " +
-                "AND (:categories IS NULL OR e.category.id IN :categories) " +
-                "AND (:paid IS NULL OR e.paid = :paid) " +
                 "AND e.eventDate BETWEEN :start AND :end " +
-                "AND e.state = :state " +
-                "ORDER BY e.createdOn";
-        TypedQuery<Event> query = em.createQuery(jpql, Event.class)
+                "AND e.state = :state ");
+
+        if (categories != null) {
+            jpql.append("AND e.category.id IN :categories ");
+        }
+        if (paid != null) {
+            jpql.append("AND e.paid = :paid ");
+        }
+        jpql.append("ORDER BY e.createdOn");
+
+        TypedQuery<Event> query = em.createQuery(jpql.toString(), Event.class)
                 .setParameter("text", text)
                 .setParameter("categories", categories)
                 .setParameter("paid", paid)
@@ -77,6 +93,12 @@ public class UtilPublicEventRepositoryImpl implements UtilPublicEventRepository 
                 .setFirstResult(from)
                 .setMaxResults(size);
 
+        if (categories != null) {
+            query.setParameter("categories", categories);
+        }
+        if (paid != null) {
+            query.setParameter("paid", paid);
+        }
         return query.getResultList();
     }
 
@@ -88,19 +110,25 @@ public class UtilPublicEventRepositoryImpl implements UtilPublicEventRepository 
                                                             State state,
                                                             int from,
                                                             int size) {
-        String jpql = "SELECT e FROM Event AS e " +
+        StringBuilder jpql = new StringBuilder("SELECT e FROM Event AS e " +
                 "JOIN FETCH e.category " +
                 "JOIN FETCH e.location " +
                 "JOIN FETCH e.initiator " +
                 "WHERE (LOWER(e.annotation) LIKE LOWER(CONCAT('%', :text, '%')) " +
                 "OR LOWER(e.description) LIKE LOWER(CONCAT('%', :text, '%'))) " +
-                "AND (:categories IS NULL OR e.category.id IN :categories) " +
-                "AND (:paid IS NULL OR e.paid = :paid) " +
                 "AND e.eventDate >= :now " +
                 "AND e.participantLimit > e.confirmedRequests " +
-                "AND e.state = :state " +
-                "ORDER BY e.createdOn";
-        TypedQuery<Event> query = em.createQuery(jpql, Event.class)
+                "AND e.state = :state ");
+
+        if (categories != null) {
+            jpql.append("AND e.category.id IN :categories ");
+        }
+        if (paid != null) {
+            jpql.append("AND e.paid = :paid ");
+        }
+        jpql.append("ORDER BY e.createdOn");
+
+        TypedQuery<Event> query = em.createQuery(jpql.toString(), Event.class)
                 .setParameter("text", text)
                 .setParameter("categories", categories)
                 .setParameter("paid", paid)
@@ -108,6 +136,13 @@ public class UtilPublicEventRepositoryImpl implements UtilPublicEventRepository 
                 .setParameter("state", state)
                 .setFirstResult(from)
                 .setMaxResults(size);
+
+        if (categories != null) {
+            query.setParameter("categories", categories);
+        }
+        if (paid != null) {
+            query.setParameter("paid", paid);
+        }
 
         return query.getResultList();
     }
@@ -120,18 +155,24 @@ public class UtilPublicEventRepositoryImpl implements UtilPublicEventRepository 
                                                    State state,
                                                    int from,
                                                    int size) {
-        String jpql = "SELECT e FROM Event AS e " +
+        StringBuilder jpql = new StringBuilder("SELECT e FROM Event AS e " +
                 "JOIN FETCH e.category " +
                 "JOIN FETCH e.location " +
                 "JOIN FETCH e.initiator " +
                 "WHERE (LOWER(e.annotation) LIKE LOWER(CONCAT('%', :text, '%')) " +
                 "OR LOWER(e.description) LIKE LOWER(CONCAT('%', :text, '%'))) " +
-                "AND (:categories IS NULL OR e.category.id IN :categories) " +
-                "AND (:paid IS NULL OR e.paid = :paid) " +
                 "AND e.eventDate >= :now " +
-                "AND e.state = :state " +
-                "ORDER BY e.createdOn";
-        TypedQuery<Event> query = em.createQuery(jpql, Event.class)
+                "AND e.state = :state ");
+
+        if (categories != null) {
+            jpql.append("AND e.category.id IN :categories ");
+        }
+        if (paid != null) {
+            jpql.append("AND e.paid = :paid ");
+        }
+        jpql.append("ORDER BY e.createdOn");
+
+        TypedQuery<Event> query = em.createQuery(jpql.toString(), Event.class)
                 .setParameter("text", text)
                 .setParameter("categories", categories)
                 .setParameter("paid", paid)
@@ -140,6 +181,12 @@ public class UtilPublicEventRepositoryImpl implements UtilPublicEventRepository 
                 .setFirstResult(from)
                 .setMaxResults(size);
 
+        if (categories != null) {
+            query.setParameter("categories", categories);
+        }
+        if (paid != null) {
+            query.setParameter("paid", paid);
+        }
         return query.getResultList();
     }
 }
