@@ -192,7 +192,6 @@ public class AdminService {
 
         if (body != null) {
             log.info("Ответ модуля статистики получен");
-            
             List<ViewStats> allViewStats = mapper.convertValue(body, new TypeReference<List<ViewStats>>() {});
 
             log.info("Загружены ViewStats по всем событиям.");
@@ -245,13 +244,10 @@ public class AdminService {
                         "published");
             }
         }
-        
         String newEventDateStr = adminRequest.getEventDate();
         LocalDateTime newEventDate = null;
-        
         if (newEventDateStr != null) {
             newEventDate = LocalDateTime.parse(adminRequest.getEventDate(), formatter);
-            
             if (newEventDate.isBefore(now.plusHours(2))) {
                 log.info("Дата и время на которые намечено событие не может быть раньше, " +
                         "чем через два часа от текущего момента: " + now.format(formatter));
@@ -306,7 +302,6 @@ public class AdminService {
 
         if (body != null) {
             log.info("Ответ модуля статистики получен");
-            
             List<ViewStats> allViewStats = mapper.convertValue(body, new TypeReference<List<ViewStats>>() {});
 
             log.info("ViewStats загружены");
