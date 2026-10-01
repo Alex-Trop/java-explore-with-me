@@ -68,7 +68,8 @@ public class MainExceptionHandler {
     public ResponseEntity<ApiError> handleException(Exception e) {
         log.error("Критическая ошибка:" + e.getMessage());
 
-        ApiError error = new ApiError(e.getMessage(), e.getCause().getMessage());
+        String reason = e.getCause() == null ? "Ошибка сервера" : e.getCause().getMessage();
+        ApiError error = new ApiError(e.getMessage(), reason);
 
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }

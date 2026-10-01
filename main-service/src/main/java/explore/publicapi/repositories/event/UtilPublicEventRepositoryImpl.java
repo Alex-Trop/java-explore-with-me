@@ -65,7 +65,7 @@ public class UtilPublicEventRepositoryImpl implements UtilPublicEventRepository 
                 "AND (:categories IS NULL OR e.category.id IN :categories) " +
                 "AND (:paid IS NULL OR e.paid = :paid) " +
                 "AND e.eventDate BETWEEN :start AND :end " +
-                "AND e.state = :state" +
+                "AND e.state = :state " +
                 "ORDER BY e.createdOn";
         TypedQuery<Event> query = em.createQuery(jpql, Event.class)
                 .setParameter("text", text)
@@ -98,7 +98,7 @@ public class UtilPublicEventRepositoryImpl implements UtilPublicEventRepository 
                 "AND (:paid IS NULL OR e.paid = :paid) " +
                 "AND e.eventDate >= :now " +
                 "AND e.participantLimit > e.confirmedRequests " +
-                "AND e.state = :state" +
+                "AND e.state = :state " +
                 "ORDER BY e.createdOn";
         TypedQuery<Event> query = em.createQuery(jpql, Event.class)
                 .setParameter("text", text)
@@ -129,7 +129,7 @@ public class UtilPublicEventRepositoryImpl implements UtilPublicEventRepository 
                 "AND (:categories IS NULL OR e.category.id IN :categories) " +
                 "AND (:paid IS NULL OR e.paid = :paid) " +
                 "AND e.eventDate >= :now " +
-                "AND e.state = :state" +
+                "AND e.state = :state " +
                 "ORDER BY e.createdOn";
         TypedQuery<Event> query = em.createQuery(jpql, Event.class)
                 .setParameter("text", text)
