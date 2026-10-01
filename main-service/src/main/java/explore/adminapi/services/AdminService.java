@@ -7,6 +7,7 @@ import explore.ViewStatsClient;
 import explore.adminapi.dto.*;
 import explore.adminapi.mappers.*;
 import explore.adminapi.repositories.*;
+import explore.adminapi.repositories.event.AdminEventRepository;
 import explore.dtos.CategoryDto;
 import explore.dtos.CompilationDto;
 import explore.dtos.EventFullDto;
@@ -43,6 +44,7 @@ public class AdminService {
     private final ViewStatsClient viewStatsClient;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN);
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @Transactional
     public CategoryDto addCategory(NewCategoryDto dto) {
@@ -139,15 +141,15 @@ public class AdminService {
         if (rangeEnd != null) {
             end = LocalDateTime.parse(rangeEnd, formatter);
             if (users == null && categories == null) {
-                foundEvents = eventRepository.findAllEventsInPeriod(start, end);
+                foundEvents = eventRepository.findAllEventsInPeriod(start, end, from, size);
             } else {
-                foundEvents = eventRepository.findFilteredEvents(usersId, states, categoriesId, start, end);
+                foundEvents = eventRepository.findFilteredEvents(usersId, states, categoriesId, start, end, from, size);
             }
         } else {
             if (users == null && categories == null) {
-                foundEvents = eventRepository.findAllUpcomingEvents(start);
+                foundEvents = eventRepository.findAllUpcomingEvents(start, from, size);
             } else {
-                foundEvents = eventRepository.findFilteredUpcomingEvents(usersId, states, categoriesId, start);
+                foundEvents = eventRepository.findFilteredUpcomingEvents(usersId, states, categoriesId, start, from, size);
             }
         }
 
@@ -157,9 +159,6 @@ public class AdminService {
         }
 
         List<EventFullDto> eventResults = foundEvents.stream()
-                .sorted(Comparator.comparing(Event::getEventDate))
-                .skip(from)
-                .limit(size)
                 .map(eventMapper::toEventFullDto)
                 .collect(Collectors.toList());
 
@@ -193,8 +192,7 @@ public class AdminService {
 
         if (body != null) {
             log.info("Ответ модуля статистики получен");
-
-            ObjectMapper mapper = new ObjectMapper();
+            
             List<ViewStats> allViewStats = mapper.convertValue(body, new TypeReference<List<ViewStats>>() {});
 
             log.info("Загружены ViewStats по всем событиям.");
@@ -247,8 +245,14 @@ public class AdminService {
                         "published");
             }
         }
-        if (adminRequest.getEventDate() != null) {
-            if (LocalDateTime.parse(adminRequest.getEventDate(), formatter).isBefore(now.plusHours(2))) {
+        
+        String newEventDateStr = adminRequest.getEventDate();
+        LocalDateTime newEventDate = null;
+        
+        if (newEventDateStr != null) {
+            newEventDate = LocalDateTime.parse(adminRequest.getEventDate(), formatter);
+            
+            if (newEventDate.isBefore(now.plusHours(2))) {
                 log.info("Дата и время на которые намечено событие не может быть раньше, " +
                         "чем через два часа от текущего момента: " + now.format(formatter));
                 throw new DateRequestException("Field: eventDate. Error: Дата и время на которые намечено событие " +
@@ -275,8 +279,8 @@ public class AdminService {
             log.info("Локация обновлена");
 
         }
-        if (adminRequest.getEventDate() != null) {
-            foundEvent.setEventDate(LocalDateTime.parse(adminRequest.getEventDate(), formatter));
+        if (newEventDate != null) {
+            foundEvent.setEventDate(newEventDate);
             log.info("Дата события обновлена");
         }
         if (requestAction != null) {
@@ -302,8 +306,7 @@ public class AdminService {
 
         if (body != null) {
             log.info("Ответ модуля статистики получен");
-
-            ObjectMapper mapper = new ObjectMapper();
+            
             List<ViewStats> allViewStats = mapper.convertValue(body, new TypeReference<List<ViewStats>>() {});
 
             log.info("ViewStats загружены");

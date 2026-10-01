@@ -32,4 +32,6 @@ public interface PrivateRequestRepository extends JpaRepository<ParticipationReq
             "JOIN FETCH r.requester AS u " +
             "WHERE u.id =:userId")
     List<ParticipationRequest> findAllByRequester(Integer userId);
+
+    boolean existsByEventIdAndRequesterId(Integer eventId, Integer userId);
 }

@@ -9,7 +9,6 @@ import lombok.Data;
 
 @Data
 public class NewEventDto {
-    @NotNull
     @Size(min = 20, max = 2000)
     @NotBlank
     private String annotation;
@@ -17,7 +16,6 @@ public class NewEventDto {
     @NotNull
     private Integer category;
 
-    @NotNull
     @Size(min = 20, max = 7000)
     @NotBlank
     private String description;

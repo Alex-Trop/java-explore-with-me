@@ -41,6 +41,7 @@ public class PrivateService {
     private final ViewStatsClient viewStatsClient;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN);
+    private final ObjectMapper mapper = new ObjectMapper();
 
     public List<EventShortDto> getEventsByUser(int userId, int from, int size) {
         log.info("Поступил запрос на получение списка из " + size + " событий, добавленных" +
@@ -78,7 +79,6 @@ public class PrivateService {
 
         log.info("Ответ модуля статистики получен");
 
-        ObjectMapper mapper = new ObjectMapper();
         List<ViewStats> allViewStats = mapper.convertValue(body, new TypeReference<List<ViewStats>>() {});
 
         log.info("Загружены ViewStats по всем событиям.");
@@ -169,7 +169,6 @@ public class PrivateService {
 
         log.info("Ответ модуля статистики получен");
 
-        ObjectMapper mapper = new ObjectMapper();
         List<ViewStats> allViewStats = mapper.convertValue(body, new TypeReference<List<ViewStats>>() {});
 
         log.info("ViewStats загружены");
@@ -244,7 +243,6 @@ public class PrivateService {
 
         log.info("Ответ модуля статистики получен");
 
-        ObjectMapper mapper = new ObjectMapper();
         List<ViewStats> allViewStats = mapper.convertValue(body, new TypeReference<List<ViewStats>>() {});
 
         log.info("ViewStats загружены");
@@ -439,6 +437,11 @@ public class PrivateService {
                 .orElseThrow(() -> new NotFoundError("User with id=" + userId + " was not found."));
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundError("Event with id=" + eventId + " was not found."));
+
+        if (requestRepository.existsByEventIdAndRequesterId(eventId, userId)) {
+            throw new IncorrectRequestError("Нельзя добавить повторный запрос");
+        }
+
         List<ParticipationRequest> eventRequests = requestRepository.findAllByEventId(eventId);
 
         if (event.getInitiator().getId() == userId) {
@@ -447,15 +450,8 @@ public class PrivateService {
         if (!event.getState().equals(State.PUBLISHED)) {
             throw new IncorrectRequestError("Нельзя участвовать в неопубликованном событии");
         }
-        if (!eventRequests.isEmpty()) {
-            for (ParticipationRequest request :  eventRequests) {
-                if (request.getRequester().getId() == userId) {
-                    throw new IncorrectRequestError("Нельзя добавить повторный запрос");
-                }
-            }
-            if (event.getConfirmedRequests() == event.getParticipantLimit() && event.getParticipantLimit() > 0) {
-                throw new IncorrectRequestError("Достигнуто максимальное количество участников");
-            }
+        if (!eventRequests.isEmpty() && event.getConfirmedRequests() == event.getParticipantLimit() && event.getParticipantLimit() > 0) {
+            throw new IncorrectRequestError("Достигнуто максимальное количество участников");
         }
         log.info("Проверка запроса завершена");
 

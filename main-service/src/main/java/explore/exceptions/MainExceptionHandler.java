@@ -63,4 +63,13 @@ public class MainExceptionHandler {
 
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiError> handleException(Exception e) {
+        log.error("Критическая ошибка:" + e.getMessage());
+
+        ApiError error = new ApiError(e.getMessage(), e.getCause().getMessage());
+
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

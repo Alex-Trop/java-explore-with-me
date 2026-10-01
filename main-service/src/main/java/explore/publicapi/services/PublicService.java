@@ -21,7 +21,7 @@ import explore.publicapi.mappers.PublicCompilationMapper;
 import explore.publicapi.mappers.PublicEventMapper;
 import explore.publicapi.repositories.PublicCategoryRepository;
 import explore.publicapi.repositories.PublicCompilationRepository;
-import explore.publicapi.repositories.PublicEventRepository;
+import explore.publicapi.repositories.event.PublicEventRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -48,6 +48,7 @@ public class PublicService {
     private final HitClient hitClient;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN);
+    private final ObjectMapper mapper = new ObjectMapper();
 
     public List<CompilationDto> getCompilations(Boolean pinned, int from, int size) {
         log.info("Поступил запрос на получение " + size + " подборок, не считая первые " + from + "со статусом " +
@@ -103,7 +104,6 @@ public class PublicService {
         if (body != null) {
             log.info("Ответ модуля статистики получен. Поиск был с " + rangeStart + " по " + rangeEnd);
 
-            ObjectMapper mapper = new ObjectMapper();
             List<ViewStats> allViewStats = mapper.convertValue(body, new TypeReference<List<ViewStats>>() {
             });
 
@@ -171,7 +171,6 @@ public class PublicService {
 
             log.info("Ответ модуля статистики получен. Поиск был с " + rangeStart + " по " + rangeEnd);
 
-            ObjectMapper mapper = new ObjectMapper();
             List<ViewStats> allViewStats = mapper.convertValue(body, new TypeReference<List<ViewStats>>() {
             });
 
@@ -256,32 +255,24 @@ public class PublicService {
             log.info("Одно или оба поля rangeStart-rangeEnd равно null");
             if (onlyAvailable) {
                 log.info("Поиск доступных событий после now");
-                if (paid != null) {
-                    foundEvents = eventRepository.findAvailableUpcompingEventsFilteredAndPaid(text,
-                            categoriesId,
-                            paid,
-                            now,
-                            State.PUBLISHED);
-                } else {
-                    foundEvents = eventRepository.findAvailableUpcompingEventsFilteredWithoutPaid(text,
-                            categoriesId,
-                            now,
-                            State.PUBLISHED);
-                }
+
+                foundEvents = eventRepository.findAvailableUpcompingEventsFiltered(text,
+                        categoriesId,
+                        paid,
+                        now,
+                        State.PUBLISHED,
+                        from,
+                        size);
             } else {
                 log.info("Поиск всех событий после now");
-                if (paid != null) {
-                    foundEvents = eventRepository.findUpcompingEventsFilteredAndPaid(text,
-                            categoriesId,
-                            paid,
-                            now,
-                            State.PUBLISHED);
-                } else {
-                    foundEvents = eventRepository.findUpcompingEventsFilteredWithoutPaid(text,
-                            categoriesId,
-                            now,
-                            State.PUBLISHED);
-                }
+
+                foundEvents = eventRepository.findUpcompingEventsFiltered(text,
+                        categoriesId,
+                        paid,
+                        now,
+                        State.PUBLISHED,
+                        from,
+                        size);
             }
         } else {
             LocalDateTime start = LocalDateTime.parse(rangeStart, formatter);
@@ -291,36 +282,26 @@ public class PublicService {
                 log.info("Диапазон дат задан верно");
                 if (onlyAvailable) {
                     log.info("Поиск доступных событий в заданном диапазоне");
-                    if (paid != null) {
-                        foundEvents = eventRepository.findAvailableEventsFilteredDateInBetweenAndPaid(text,
-                                categoriesId,
-                                paid,
-                                start,
-                                end,
-                                State.PUBLISHED);
-                    } else {
-                        foundEvents = eventRepository.findAvailableEventsFilteredDateInBetweenWithoutPaid(text,
-                                categoriesId,
-                                start,
-                                end,
-                                State.PUBLISHED);
-                    }
+
+                    foundEvents = eventRepository.findAvailableEventsFilteredDateInBetween(text,
+                            categoriesId,
+                            paid,
+                            start,
+                            end,
+                            State.PUBLISHED,
+                            from,
+                            size);
                 } else {
                     log.info("Поиск всех событий в заданном диапазоне");
-                    if (paid != null) {
-                        foundEvents = eventRepository.findEventsFilteredDateInBetweenAndPaid(text,
-                                categoriesId,
-                                paid,
-                                start,
-                                end,
-                                State.PUBLISHED);
-                    } else {
-                        foundEvents = eventRepository.findEventsFilteredDateInBetweenWithoutPaid(text,
-                                categoriesId,
-                                start,
-                                end,
-                                State.PUBLISHED);
-                    }
+
+                    foundEvents = eventRepository.findEventsFilteredDateInBetween(text,
+                            categoriesId,
+                            paid,
+                            start,
+                            end,
+                            State.PUBLISHED,
+                            from,
+                            size);
                 }
             } else {
                 throw new DateRequestException("Некорректный диапазон дат: rangeStart is NOT before rangeEnd");
@@ -332,8 +313,6 @@ public class PublicService {
         }
 
         List<EventShortDto> foundDtos = foundEvents.stream()
-                .skip(from)
-                .limit(size)
                 .map(eventMapper::toEventShortDto)
                 .collect(Collectors.toList());
 
@@ -341,7 +320,6 @@ public class PublicService {
 
         if (viewsStart == null) {
             viewsStart = foundEvents.stream()
-                    .sorted(Comparator.comparing(Event::getCreatedOn))
                     .findFirst()
                     .get()
                     .getCreatedOn()
@@ -363,7 +341,6 @@ public class PublicService {
             hitClient.postHit(hitDto);
         }
         Object body = viewStatsClient.getStats(viewsStart, viewsEnd, uris, true).getBody();
-        ObjectMapper mapper = new ObjectMapper();
 
         if (body != null) {
             List<ViewStats> allViewStats = mapper.convertValue(body, new TypeReference<List<ViewStats>>() {
@@ -420,7 +397,6 @@ public class PublicService {
 
         String[] uris = new String[]{uri};
         Object body = viewStatsClient.getStats(rangeStart, rangeEnd, uris, true).getBody();
-        ObjectMapper mapper = new ObjectMapper();
         EventFullDto eventDto = eventMapper.toEventFullDto(event);
 
         if (body != null) {
