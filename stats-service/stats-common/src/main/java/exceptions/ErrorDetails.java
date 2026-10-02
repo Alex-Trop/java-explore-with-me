@@ -7,4 +7,5 @@ public class ErrorDetails {
     public static final String IP_ERROR = "Не указан IP пользователя, отправившего запрос";
     public static final String TIME_ERROR = "Не указано время создания запроса";
     public static final String TIME_FORMAT_ERROR = "Некорректный формат времени";
+    public static final String TIME_PARAMETER_ERROR = "Поля start и end обязательны, start должно быть раньше end";
 }

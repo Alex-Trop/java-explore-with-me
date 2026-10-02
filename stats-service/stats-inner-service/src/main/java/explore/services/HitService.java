@@ -3,8 +3,10 @@ package explore.services;
 import dto.hits.HitDto;
 import dto.views.ViewStats;
 import static dto.DateTimeFormat.DATE_TIME_PATTERN;
+import static exceptions.ErrorDetails.TIME_PARAMETER_ERROR;
 
 import dto.views.ViewStatsProjection;
+import exceptions.DateParameterError;
 import lombok.extern.slf4j.Slf4j;
 import explore.mappers.HitMapper;
 import explore.models.Hit;
@@ -43,10 +45,25 @@ public class HitService {
         log.info("Запрос на получение статистики с " + start + " по " + end + "для событий: " + uris);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN);
+        if (uris != null) {
+            List<String> uriList = List.of(uris);
+
+            if (uriList.isEmpty() || uriList.stream().anyMatch(uri -> uri.equalsIgnoreCase("/events"))) {
+                uris = null;
+                uriList = null;
+            }
+        }
+        if (start == null || end == null) {
+            throw new DateParameterError(TIME_PARAMETER_ERROR);
+        }
+
         LocalDateTime startTime = LocalDateTime.parse(start, formatter);
         LocalDateTime endTime = LocalDateTime.parse(end, formatter);
         List<ViewStatsProjection> projections;
 
+        if (startTime.isAfter(endTime)) {
+            throw new DateParameterError(TIME_PARAMETER_ERROR);
+        }
         if (unique && uris != null) {
             log.info("Получение уникальных запросов по uri");
 
