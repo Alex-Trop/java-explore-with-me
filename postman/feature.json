@@ -760,7 +760,7 @@
           "query": [
             {
               "key": "text",
-              "value": "{{commentText}}"
+              "value": "{{commentText2}}"
             }
           ]
         }
@@ -1008,7 +1008,7 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test(\"Ответ должен содержать код статуса 200 и тело в формате json\", function(){\r\n    pm.response.to.have.status(200);\r\n    pm.response.to.be.withBody;\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"Ожидается список из 1 элемента\", function() {\r\n    pm.expect(pm.response.json().length).to.eql(1);\r\n})"
+              "pm.test(\"Ответ должен содержать код статуса 200 и тело в формате json\", function(){\r\n    pm.response.to.have.status(200);\r\n    pm.response.to.be.withBody;\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"В теле ответа ожидается пустой список\", function() {\n    pm.expect(pm.response.json()).to.deep.equal([]);\r\n})"
             ]
           }
         }
