@@ -1091,127 +1091,127 @@
   "variable": [
     {
       "key": "baseUrl",
-      "value": ""
+      "value": "http://localhost:8080"
     },
     {
       "key": "privateUrl",
-      "value": ""
+      "value": "http://localhost:8080/users"
     },
     {
       "key": "adminUrl",
-      "value": ""
+      "value": "http://localhost:8080/admin"
     },
     {
       "key": "userName1",
-      "value": ""
+      "value": "Michael Jackson"
     },
     {
       "key": "userName2",
-      "value": ""
+      "value": "Ichabod Crane"
     },
     {
       "key": "email1",
-      "value": ""
+      "value": "jackson@ghfhj.com"
     },
     {
       "key": "email2",
-      "value": ""
+      "value": "crane@dlfkldfk.com"
     },
     {
       "key": "annotation",
-      "value": ""
+      "value": "Первое событие (аннотация)"
     },
     {
       "key": "categoryName",
-      "value": ""
+      "value": "Первая категория"
     },
     {
       "key": "description",
-      "value": ""
+      "value": "Первое событие (описание)"
     },
     {
       "key": "eventDate",
-      "value": ""
+      "value": "2026-12-31 20:00:00"
     },
     {
       "key": "lat",
-      "value": ""
+      "value": "78.325"
     },
     {
       "key": "lon",
-      "value": ""
+      "value": "54.134"
     },
     {
       "key": "paid",
-      "value": ""
+      "value": "false"
     },
     {
       "key": "participantLimit",
-      "value": ""
+      "value": "0"
     },
     {
       "key": "requestModeration",
-      "value": ""
+      "value": "false"
     },
     {
       "key": "title",
-      "value": ""
+      "value": "Первое событие (название)"
     },
     {
       "key": "commentText",
-      "value": ""
+      "value": "Первый комментарий"
     },
     {
       "key": "commentText2",
-      "value": ""
+      "value": "Второй комментарий"
     },
     {
       "key": "stateAction",
-      "value": ""
+      "value": "PUBLISH_EVENT"
     },
     {
       "key": "userId1",
-      "value": ""
+      "value": "0"
     },
     {
       "key": "userId2",
-      "value": ""
+      "value": "0"
     },
     {
       "key": "eventId",
-      "value": ""
+      "value": "0"
     },
     {
       "key": "commId",
-      "value": ""
+      "value": "0"
     },
     {
       "key": "commId2",
-      "value": ""
+      "value": "0"
     },
     {
       "key": "categoryId",
-      "value": ""
+      "value": "0"
     },
     {
       "key": "fakeUser",
-      "value": ""
+      "value": "999"
     },
     {
       "key": "fakeEvent",
-      "value": ""
+      "value": "999"
     },
     {
       "key": "fakeText",
-      "value": ""
+      "value": "Такой комментарий не добавляли"
     },
     {
       "key": "eventId2",
-      "value": ""
+      "value": "0"
     },
     {
       "key": "fakeComment",
-      "value": ""
+      "value": "999"
     }
   ]
 }
