@@ -208,7 +208,7 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test(\"Ответ должен содержать код статуса 409 и тело в формате json\", function(){\r\n    pm.response.to.have.status(409);\r\n    pm.response.to.be.withBody;\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"Тело ответа должно содержать поля message и reason\", function() {\r\n    pm.expect(pm.response.json()).to.have.property('message');\r\n    pm.expect(pm.response.json()).to.have.property('reason');\r\n});\r\n\r\nconst commId = pm.response.json().id;\r\n\r\npm.collectionVariables.set(\"commId\", commId);"
+              "pm.test(\"Ответ должен содержать код статуса 409 и тело в формате json\", function(){\r\n    pm.response.to.have.status(409);\r\n    pm.response.to.be.withBody;\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"Тело ответа должно содержать поля message и reason\", function() {\r\n    pm.expect(pm.response.json()).to.have.property('message');\r\n    pm.expect(pm.response.json()).to.have.property('reason');\r\n});"
             ]
           }
         }
@@ -504,7 +504,7 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test(\"Ответ должен содержать код статуса 201 и тело в формате json\", function(){\r\n    pm.response.to.have.status(201);\r\n    pm.response.to.be.withBody;\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"Тело ответа должно содержать поля id, author, event, text, createdOn\", function() {\r\n    pm.expect(pm.response.json()).to.have.property('id');\r\n    pm.expect(pm.response.json()).to.have.property('author');\r\n    pm.expect(pm.response.json()).to.have.property('event');\r\n    pm.expect(pm.response.json()).to.have.property('text');\r\n    pm.expect(pm.response.json()).to.have.property('createdOn');\r\n});\r\n\r\nconst commId = pm.response.json().id;\r\n\r\npm.collectionVariables.set(\"commId2\", commId);"
+              "pm.test(\"Ответ должен содержать код статуса 201 и тело в формате json\", function(){\r\n    pm.response.to.have.status(201);\r\n    pm.response.to.be.withBody;\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"Тело ответа должно содержать поля id, author, event, text, createdOn\", function() {\r\n    pm.expect(pm.response.json()).to.have.property('id');\r\n    pm.expect(pm.response.json()).to.have.property('author');\r\n    pm.expect(pm.response.json()).to.have.property('event');\r\n    pm.expect(pm.response.json()).to.have.property('text');\r\n    pm.expect(pm.response.json()).to.have.property('createdOn');\r\n});\n\nconst commId = pm.response.json().id;\n\npm.collectionVariables.set(\"commId\", commId);"
             ]
           }
         }
@@ -577,7 +577,7 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test(\"Ответ должен содержать код статуса 201 и тело в формате json\", function(){\r\n    pm.response.to.have.status(201);\r\n    pm.response.to.be.withBody;\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"Тело ответа должно содержать поля id, author, event, text, createdOn\", function() {\r\n    pm.expect(pm.response.json()).to.have.property('id');\r\n    pm.expect(pm.response.json()).to.have.property('author');\r\n    pm.expect(pm.response.json()).to.have.property('event');\r\n    pm.expect(pm.response.json()).to.have.property('text');\r\n    pm.expect(pm.response.json()).to.have.property('createdOn');\r\n});"
+              "pm.test(\"Ответ должен содержать код статуса 201 и тело в формате json\", function(){\r\n    pm.response.to.have.status(201);\r\n    pm.response.to.be.withBody;\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"Тело ответа должно содержать поля id, author, event, text, createdOn\", function() {\r\n    pm.expect(pm.response.json()).to.have.property('id');\r\n    pm.expect(pm.response.json()).to.have.property('author');\r\n    pm.expect(pm.response.json()).to.have.property('event');\r\n    pm.expect(pm.response.json()).to.have.property('text');\r\n    pm.expect(pm.response.json()).to.have.property('createdOn');\r\n});\n\nconst commId = pm.response.json().id;\n\npm.collectionVariables.set(\"commId2\", commId);"
             ]
           }
         }
@@ -621,7 +621,7 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test(\"Ответ должен содержать код статуса 200 и тело в формате json\", function(){\r\n    pm.response.to.have.status(200);\r\n    pm.response.to.be.withBody;\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"Ожидается список из 2 элементов\", function() {\r\n    pm.expect(pm.response.json().length).to.eql(2);\r\n})"
+              "pm.test(\"Ответ должен содержать код статуса 200 и тело в формате json\", function(){\r\n    pm.response.to.have.status(200);\r\n    pm.response.to.be.withBody;\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"Ожидается список из 1 элемента\", function() {\r\n    pm.expect(pm.response.json().length).to.eql(1);\r\n})"
             ]
           }
         }
@@ -709,7 +709,7 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test(\"Ответ должен содержать код статуса 200 и тело в формате json\", function(){\r\n    pm.response.to.have.status(200);\r\n    pm.response.to.be.withBody;\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"В теле ответа ожидается список из 3 элементов\", function() {\r\n    pm.expect(pm.response.json().length).to.eql(3);\r\n});"
+              "pm.test(\"Ответ должен содержать код статуса 200 и тело в формате json\", function(){\r\n    pm.response.to.have.status(200);\r\n    pm.response.to.be.withBody;\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"В теле ответа ожидается список из 2 элементов\", function() {\r\n    pm.expect(pm.response.json().length).to.eql(2);\r\n});"
             ]
           }
         }
@@ -739,7 +739,7 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test(\"Ответ должен содержать код статуса 200 и тело в формате json\", function(){\r\n    pm.response.to.have.status(200);\r\n    pm.response.to.be.withBody;\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"В теле ответа ожидается список из 1 элемента\", function() {\r\n    pm.expect(pm.response.json().length).to.eql(1);\r\n    pm.expect(pm.response.json()[0].text).to.eql(pm.collectionVariables.get(\"commentText\"));\r\n});"
+              "pm.test(\"Ответ должен содержать код статуса 200 и тело в формате json\", function(){\r\n    pm.response.to.have.status(200);\r\n    pm.response.to.be.withBody;\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"В теле ответа ожидается список из 1 элемента\", function() {\r\n    pm.expect(pm.response.json().length).to.eql(1);\r\n    pm.expect(pm.response.json()[0].text).to.eql(pm.collectionVariables.get(\"commentText2\"));\r\n});"
             ]
           }
         }
@@ -748,7 +748,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{baseUrl}}/events/{{eventId}}/comments?text={{commentText}}",
+          "raw": "{{baseUrl}}/events/{{eventId}}/comments?text={{commentText2}}",
           "host": [
             "{{baseUrl}}"
           ],
