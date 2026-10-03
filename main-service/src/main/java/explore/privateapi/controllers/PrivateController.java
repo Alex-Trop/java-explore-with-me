@@ -1,5 +1,6 @@
 package explore.privateapi.controllers;
 
+import explore.dtos.CommentDto;
 import explore.dtos.EventFullDto;
 import explore.dtos.EventShortDto;
 import explore.privateapi.dto.*;
@@ -78,5 +79,29 @@ public class PrivateController {
     public ResponseEntity<ParticipationRequestDto> cancelRequest(@PathVariable int userId,
                                                                  @PathVariable int requestId) {
         return ResponseEntity.ok(service.cancelRequest(userId, requestId));
+    }
+
+    //КОММЕНТАРИИ
+    @PostMapping("/{userId}/comments")
+    public ResponseEntity<CommentDto> postComment(@PathVariable int userId,
+                                                  @RequestParam(name = "eventId") int eventId,
+                                                  @RequestBody @Valid NewCommentRequest commentRequest) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(service.addComment(userId, eventId, commentRequest));
+    }
+
+    @DeleteMapping("/{userId}/comments/{comId}")
+    public ResponseEntity<Void> deleteComment(@PathVariable int userId,
+                                              @PathVariable int comId) {
+        service.deleteComment(userId, comId);
+        return ResponseEntity
+                .noContent()
+                .build();
+    }
+
+    @GetMapping("/{userId}/comments")
+    public ResponseEntity<List<CommentDto>> getUserComments(@PathVariable int userId) {
+        return ResponseEntity.ok(service.getUserComments(userId));
     }
 }

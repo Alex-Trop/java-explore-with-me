@@ -1,5 +1,6 @@
 package explore.privateapi.mappers;
 
+import explore.dtos.EventCommentDto;
 import explore.dtos.EventFullDto;
 import explore.dtos.EventShortDto;
 import explore.models.Event;
@@ -15,6 +16,8 @@ public interface PrivateEventMapper {
     @Mapping(target = "views", constant = "0")
     @Mapping(target = "categoryDto", source = "category")
     EventShortDto toEventShortDto(Event event);
+
+    EventCommentDto toEventCommentDto(Event event);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)

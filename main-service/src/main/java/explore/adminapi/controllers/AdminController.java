@@ -114,4 +114,13 @@ public class AdminController {
                 .status(HttpStatus.OK)
                 .body(service.updateCompilation(compId, compilationRequest));
     }
+
+    //КОММЕНТЫ
+    @DeleteMapping("/comments/{comId}")
+    public ResponseEntity<Void> deleteComment(@PathVariable int comId) {
+        service.deleteComment(comId);
+        return ResponseEntity
+                .noContent()
+                .build();
+    }
 }
