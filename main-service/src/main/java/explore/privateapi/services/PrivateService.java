@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dto.views.ViewStats;
 import explore.ViewStatsClient;
+import explore.dtos.CommentDto;
 import explore.dtos.EventFullDto;
 import explore.dtos.EventShortDto;
 import explore.dtos.LocationDto;
@@ -12,6 +13,7 @@ import explore.exceptions.IncorrectRequestError;
 import explore.exceptions.NotFoundError;
 import explore.models.*;
 import explore.privateapi.dto.*;
+import explore.privateapi.mappers.PrivateCommentMapper;
 import explore.privateapi.mappers.PrivateEventMapper;
 import explore.privateapi.repositories.*;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +38,9 @@ public class PrivateService {
     private final PrivateCategoryRepository categoryRepository;
     private final PrivateLocationRepository locationRepository;
     private final PrivateRequestRepository requestRepository;
+    private final PrivateCommentRepository commentRepository;
     private final PrivateEventMapper eventMapper;
+    private final PrivateCommentMapper commentMapper;
 
     private final ViewStatsClient viewStatsClient;
 
@@ -513,5 +517,68 @@ public class PrivateService {
                 userId,
                 Status.CANCELED.name()
         );
+    }
+
+    @Transactional
+    public CommentDto addComment(int userId, int eventId, NewCommentRequest commentRequest) {
+        log.info("Поступил запрос от пользователя {} на добавление комментария к событию id={}", userId, eventId);
+
+        LocalDateTime now = LocalDateTime.now();
+        User author = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundError("User with id=" + userId + " was not found."));
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new NotFoundError("Event with id=" + eventId + " was not found."));
+
+        if (!event.getState().equals(State.PUBLISHED)) {
+            throw new IncorrectRequestError("Комментирование неопубликованных событий невозможно");
+        }
+
+        Comment newComment = new Comment(
+                null,
+                author,
+                event,
+                commentRequest.getText(),
+                now
+        );
+
+        Comment savedCom = commentRepository.save(newComment);
+
+        log.info("Комментарий сохранен");
+
+        CommentDto comment = commentMapper.toCommentDto(savedCom);
+
+        log.info("Маппинг прошел успешно");
+        return comment;
+    }
+
+    @Transactional
+    public void deleteComment(int userId, int comId) {
+        log.info("Запрос на удаление комментария с id= {} от пользователя с id={}", comId, userId);
+        if (!commentRepository.existsByIdAndAuthorId(comId, userId)) {
+            throw new NotFoundError("Комментария с таким id у данного пользователя не найдено");
+        }
+        commentRepository.deleteById(comId);
+        log.info("Комментарий удален");
+    }
+
+    public List<CommentDto> getUserComments(int userId) {
+        log.info("Запрос на получение всех комментариев пользователя с Id={}", userId);
+        if (!userRepository.existsById(userId)) {
+            throw new NotFoundError("Пользователь не найден");
+        }
+
+        List<Comment> foundComments = commentRepository.findCommentsByAuthorId(userId);
+
+        if (foundComments.isEmpty()) {
+            log.info("Комментарии отсутствуют");
+            return new ArrayList<>();
+        }
+
+        List<CommentDto> results = foundComments.stream()
+                .map(commentMapper::toCommentDto)
+                .collect(Collectors.toList());
+
+        log.info("Найдено {} комментариев. Маппинг завершен", results.size());
+        return results;
     }
 }

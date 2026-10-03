@@ -6,20 +6,16 @@ import dto.hits.HitDto;
 import dto.views.ViewStats;
 import explore.HitClient;
 import explore.ViewStatsClient;
-import explore.dtos.CategoryDto;
-import explore.dtos.CompilationDto;
-import explore.dtos.EventFullDto;
-import explore.dtos.EventShortDto;
+import explore.dtos.*;
 import explore.exceptions.DateRequestException;
 import explore.exceptions.NotFoundError;
-import explore.models.Category;
-import explore.models.Compilation;
-import explore.models.Event;
-import explore.models.State;
+import explore.models.*;
 import explore.publicapi.mappers.PublicCategoryMapper;
+import explore.publicapi.mappers.PublicCommentMapper;
 import explore.publicapi.mappers.PublicCompilationMapper;
 import explore.publicapi.mappers.PublicEventMapper;
 import explore.publicapi.repositories.PublicCategoryRepository;
+import explore.publicapi.repositories.PublicCommentRepository;
 import explore.publicapi.repositories.PublicCompilationRepository;
 import explore.publicapi.repositories.event.PublicEventRepository;
 import lombok.RequiredArgsConstructor;
@@ -40,9 +36,11 @@ public class PublicService {
     private final PublicCompilationRepository compilationRepository;
     private final PublicCategoryRepository categoryRepository;
     private final PublicEventRepository eventRepository;
+    private final PublicCommentRepository commentRepository;
     private final PublicCompilationMapper compilationMapper;
     private final PublicCategoryMapper categoryMapper;
     private final PublicEventMapper eventMapper;
+    private final PublicCommentMapper commentMapper;
 
     private final ViewStatsClient viewStatsClient;
     private final HitClient hitClient;
@@ -408,5 +406,26 @@ public class PublicService {
         }
         log.info("EventShortDto полностью загружен");
         return eventDto;
+    }
+
+    public List<CommentDto> getComments(int eventId, String text) {
+        log.info("Запрос на получение комментариев к событию id={} с text={}", eventId, text);
+        if (!eventRepository.existsByIdAndState(eventId, State.PUBLISHED)) {
+            throw new NotFoundError("Событие не найдено");
+        }
+
+        List<Comment> foundComments = commentRepository.findAllByEventIdAndText(eventId, text);
+
+        if (foundComments.isEmpty()) {
+            log.info("Комментарии отсутствуют");
+            return new ArrayList<>();
+        }
+
+        List<CommentDto> results = foundComments.stream()
+                .map(commentMapper::toCommentDto)
+                .collect(Collectors.toList());
+
+        log.info("Найдено {} комментариев. Маппинг завершен", results.size());
+        return results;
     }
 }

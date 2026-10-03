@@ -1,5 +1,6 @@
 package explore.publicapi.mappers;
 
+import explore.dtos.EventCommentDto;
 import explore.dtos.EventFullDto;
 import explore.dtos.EventShortDto;
 import explore.models.Event;
@@ -15,4 +16,6 @@ public interface PublicEventMapper {
     @Mapping(target = "views", constant = "0")
     @Mapping(target = "categoryDto", source = "category")
     EventFullDto toEventFullDto(Event event);
+
+    EventCommentDto toEventCommentDto(Event event);
 }
