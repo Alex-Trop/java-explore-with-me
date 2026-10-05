@@ -9,4 +9,6 @@ import java.util.Optional;
 
 public interface PublicEventRepository extends JpaRepository<Event, Integer>, UtilPublicEventRepository {
     Optional<Event> findByIdAndState(Integer id, State state);
+
+    boolean existsByIdAndState(int id, State state);
 }

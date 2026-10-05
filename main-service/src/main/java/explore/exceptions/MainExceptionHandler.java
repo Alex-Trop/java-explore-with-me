@@ -34,7 +34,7 @@ public class MainExceptionHandler {
                 .toString();
         ApiError error = new ApiError(violations, "Incorrectly made request");
 
-        log.warn("Ошибка валидации MethodArgumentNotValidException: {}.", violations);
+        log.warn("Ошибка валидации MethodArgumentNotValidException: field: {}, error: {}.", e.getFieldError().getField(), violations);
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 

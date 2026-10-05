@@ -36,6 +36,7 @@ public class AdminService {
     private final AdminUserRepository userRepository;
     private final AdminCompilationRepository compilationRepository;
     private final AdminLocationRepository locationRepository;
+    private final AdminCommentRepository commentRepository;
     private final AdminCategoryMapper categoryMapper;
     private final AdminEventMapper eventMapper;
     private final AdminUserMapper userMapper;
@@ -443,5 +444,15 @@ public class AdminService {
 
         log.info("Данные в БД обновлены: " + updatedCompilation);
         return compilationMapper.toCompilationDto(updatedCompilation);
+    }
+
+    @Transactional
+    public void deleteComment(int comId) {
+        log.info("Запрос на удаление комментария id={}", comId);
+        if (!commentRepository.existsById(comId)) {
+            throw new NotFoundError("Комментарий не найден");
+        }
+        commentRepository.deleteById(comId);
+        log.info("Комментарий удален");
     }
 }

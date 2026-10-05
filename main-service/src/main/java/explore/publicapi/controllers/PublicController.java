@@ -1,9 +1,6 @@
 package explore.publicapi.controllers;
 
-import explore.dtos.CategoryDto;
-import explore.dtos.CompilationDto;
-import explore.dtos.EventFullDto;
-import explore.dtos.EventShortDto;
+import explore.dtos.*;
 import explore.publicapi.services.PublicService;
 import explore.validation.ValidDateTimeFormat;
 import explore.validation.ValidSortFormat;
@@ -62,5 +59,11 @@ public class PublicController {
     @GetMapping("/events/{id}")
     public ResponseEntity<EventFullDto> getEventById(@PathVariable int id, HttpServletRequest request) {
         return ResponseEntity.ok(service.getEventById(id, request.getRemoteAddr()));
+    }
+
+    @GetMapping("/events/{eventId}/comments")
+    public ResponseEntity<List<CommentDto>> getComments(@PathVariable int eventId,
+                                                        @RequestParam(name = "text", defaultValue = "") String text) {
+        return ResponseEntity.ok(service.getComments(eventId, text));
     }
 }

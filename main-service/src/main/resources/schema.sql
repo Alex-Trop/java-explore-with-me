@@ -59,3 +59,11 @@ CREATE TABLE IF NOT EXISTS requests (
     created timestamp NOT NULL,
     status varchar NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS comments (
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    author_id INT REFERENCES users(id) NOT NULL,
+    event_id INT REFERENCES events(id) NOT NULL,
+    text varchar(254) NOT NULL,
+    created timestamp
+);
